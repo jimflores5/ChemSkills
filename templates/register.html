@@ -1,50 +1,64 @@
-{% extends "loginbase.html" %}
+{% extends "base.html" %}
 
 {% block content %}
     <h1 class="wrapper text-center"><u>Create an account to track Chemistry skills</u></h1>
     <br/>
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class = 'col-5 border wrapper text-center'>
-                <h2 style="color:purple"><u>Students</u>:</h2>
-                <form action="/login" method="post">
-                    {% for item in student_info %}
-                        <div class="form-group row">
-                            <div class="col-5 wrapper text-right">
-                                <label for='{{item[1]}}'>{{item[0]}}:</label>
-                            </div>
-                            <div class="col-3 wrapper text-left">
-                                <input name="{{item[1]}}" {% if item[1] == 'password' or item[1]=='confirm' %} type="password"{% else %} type='text' {% endif %} placeholder="{{item[2]}}"size = "30">
-                            </div>
-                        </div>
-                    {% endfor %}
-                    <input type="submit" class="btn btn-success mb-2" value="Register">
-                </form>
+            <div class="col-5 border wrapper text-center">
+                <h2 style="color:brown"><u>Already have an account?</u></h2>
+                <a href="login" class="btn btn-primary mb-2" role="button">Sign In</a>
             </div>
             <div class="col-1 wrapper text-center align-self-center">
                 <h1 style="color:red"><em>OR...</em></h1>
             </div>
-            <div class = 'col-5 border wrapper text-center'>
-                <h2 style="color:blue"><u>Teachers</u>:</h2>
-                <form action="/login" method="post">
-                    {% for item in teacher_info %}
-                        <div class="form-group row">
-                            <div class="col-5 wrapper text-right">
-                                <label for='{{item[1]}}'>{{item[0]}}:</label>
-                            </div>
-                            <div class="col-3 wrapper text-left">
-                                <input name="{{item[1]}}" {% if item[1] == 'password' or item[1]=='confirm' %} type="password"{% else %} type='text' {% endif %} placeholder="{{item[2]}}"size = "30">
-                            </div>
+            {% if progress == 0 %}
+                <div class="col-5 border wrapper text-center">
+                    <h2 style="color:purple"><u>Register</u></h2>
+                    <form action="/register" method="post" style="font-size:1.5vw">
+                        <label for="choice">I am a: </label>
+                        <input type="radio" name="role" value="Student" required> <span style="font-size: 1.5vw; color:blue">Student</span>
+                        <input type="radio" name="role" value="Teacher" required> <span style="font-size: 1.5vw; color:green">Teacher</span>
+                        <div class="wrapper text-center">
+                            <input class="btn btn-secondary mb-3" type="submit" value="Next...">
+                            <input name="progress" type="hidden" value=0>
                         </div>
-                    {% endfor %}
-                    <input type="submit" class="btn btn-success mb-2" value="Register">
-                </form>
-            </div>
+                    </form>
+                </div>
+            {% else %}
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    <div class='col-5 border wrapper text-center'>
+                        <h2 style="color:purple"><u>{{role}}s</u>:</h2>
+                        <form action="/register" method="post">
+                            {% for item in range(info_list|length) %}
+                                <div class="form-group row">
+                                    <div class="col-5 wrapper text-right">
+                                        <label for='{{info_list[item][1]}}'>{{info_list[item][0]}}:</label>
+                                    </div>
+                                    <div class="col-3 wrapper text-left">
+                                        {% if info_list[item][1] == 'name' and progress == 2 %}
+                                            <input name="{{info_list[item][1]}}" required type='text' value="{{name}}" size = "30">
+                                        {% elif info_list[item][1] == 'school_email' and progress == 2 %}
+                                            <input name="{{info_list[item][1]}}" required type='text' value="{{email}}" size = "30">
+                                        {% else%}
+                                            <input name="{{info_list[item][1]}}" required {% if info_list[item][1] == 'password' or info_list[item][1]=='confirm' %} type="password"{% else %} type='text' {% endif %} placeholder="{{info_list[item][2]}}"size = "30">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% if messages %}
+                                <span class='{{messages[0][0]}}' style="font-size: 14pt">{{messages[0][1]}}</span>
+                            {% endif %}
+                            <div class='wrapper text-center'>
+                                <input type="submit" class="btn btn-success mb-2" value="Register">
+                                <input name="progress" type="hidden" value=2>
+                                <input name='role' type='hidden' value={{role}}>
+                            </div>
+                        </form>
+                    </div>
+                {% endwith %}
+            {% endif %}
         </div> 
         <br/>
-        <div class="wrapper text-center">
-            <h2 style="color:brown"><u>Already have an account?</u></h2>
-            <a href="login" class="btn btn-primary mb-2" role="button">Sign In</a>
-        </div>
     </div>
 {% endblock %}  

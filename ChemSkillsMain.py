@@ -40,17 +40,57 @@ class Teachers(db.Model):
         self.password = password
         self.hint = hint
 
+student_info = [("Name",'name',''), ("School e-mail",'school_email','This will be your username'),("Teacher's e-mail",'teacher_email',''),("Password",'password','Do not share...'), ("Confirm password",'confirm','')]
+teacher_info = [("Name",'name',''), ("School e-mail",'school_email','This will be your username'),("Password",'password','Do not share...'), ("Confirm password",'confirm',''),("Password hint",'hint','')]
+
+@app.route('/')
+def mainindex():
+
+    return render_template('mainindex.html')
+
 @app.route('/login')
 def login():
-    email='Nobody@school.net'
 
-    return render_template('login.html',email=email)
+    return render_template('login.html',title='Login to skills practice')
 
-@app.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
 def register():
-    student_info = [("Name",'name',''), ("School e-mail",'school_email','This will be your username'),("Teacher's e-mail",'teacher_email',''),("Password",'password','Do not share...'), ("Confirm password",'confirm','')]
-    teacher_info = [("Name",'name',''), ("School e-mail",'school_email','This will be your username'),("Password",'password','Do not share...'), ("Confirm password",'confirm',''),("Password hint",'hint','')]
-    return render_template('register.html', student_info = student_info, teacher_info = teacher_info)
+    if request.method == 'POST':
+        progress = int(request.form['progress'])
+        if progress == 0:
+            role = request.form['role']
+            progress += 1
+            if role == "Teacher":
+                info_list = teacher_info
+            else:
+                info_list = student_info
+            return render_template('register.html', title='Register',info_list = info_list, role=role, progress = progress)
+        else:
+            role = request.form['role']
+            name = request.form['name']
+            email = request.form['school_email'].lower()
+            password = request.form['password']
+            confirm = request.form['confirm']
+            if password != confirm:
+                flash('Passwords do not match', 'error')
+                if role == 'Teacher':
+                    info_list = teacher_info
+                else:
+                    info_list = student_info
+                return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email)
+            if role == 'Teacher':
+                new_teacher = Teachers(name,email,password,request.form['hint'])
+                db.session.add(new_teacher)
+                db.session.commit()
+            else: 
+                new_student = Students(name,email,request.form['teacher_email'].lower(),password)
+                db.session.add(new_student)
+                db.session.commit()
+
+            return render_template('mainindex.html', title='Main page', text = "Check DB to see if registration was successful.")
+
+    progress = 0
+    return render_template('register.html', title='Register', progress = progress)
 
 if __name__ == '__main__':
     app.run()
