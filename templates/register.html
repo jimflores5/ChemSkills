@@ -1,0 +1,50 @@
+{% extends "loginbase.html" %}
+
+{% block content %}
+    <h1 class="wrapper text-center"><u>Create an account to track Chemistry skills</u></h1>
+    <br/>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class = 'col-5 border wrapper text-center'>
+                <h2 style="color:purple"><u>Students</u>:</h2>
+                <form action="/login" method="post">
+                    {% for item in student_info %}
+                        <div class="form-group row">
+                            <div class="col-5 wrapper text-right">
+                                <label for='{{item[1]}}'>{{item[0]}}:</label>
+                            </div>
+                            <div class="col-3 wrapper text-left">
+                                <input name="{{item[1]}}" {% if item[1] == 'password' or item[1]=='confirm' %} type="password"{% else %} type='text' {% endif %} placeholder="{{item[2]}}"size = "30">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" class="btn btn-success mb-2" value="Register">
+                </form>
+            </div>
+            <div class="col-1 wrapper text-center align-self-center">
+                <h1 style="color:red"><em>OR...</em></h1>
+            </div>
+            <div class = 'col-5 border wrapper text-center'>
+                <h2 style="color:blue"><u>Teachers</u>:</h2>
+                <form action="/login" method="post">
+                    {% for item in teacher_info %}
+                        <div class="form-group row">
+                            <div class="col-5 wrapper text-right">
+                                <label for='{{item[1]}}'>{{item[0]}}:</label>
+                            </div>
+                            <div class="col-3 wrapper text-left">
+                                <input name="{{item[1]}}" {% if item[1] == 'password' or item[1]=='confirm' %} type="password"{% else %} type='text' {% endif %} placeholder="{{item[2]}}"size = "30">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" class="btn btn-success mb-2" value="Register">
+                </form>
+            </div>
+        </div> 
+        <br/>
+        <div class="wrapper text-center">
+            <h2 style="color:brown"><u>Already have an account?</u></h2>
+            <a href="login" class="btn btn-primary mb-2" role="button">Sign In</a>
+        </div>
+    </div>
+{% endblock %}  
