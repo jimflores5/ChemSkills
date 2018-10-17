@@ -7,21 +7,27 @@
         <div class="row justify-content-center">
             <div class="col-4 border wrapper text-center">
                 <h2 style="color:blue"><u>Sign In</u></h2>
-                <form action="/login" method="post">
-                    <div class="form-group row">
-                        <label for="email" class="col-sm col-form-label wrapper text-right">School e-mail:</label>
-                        <div class="col-sm">
-                            <input type="email" id="email" placeholder="Nobody@school.org" size="30">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    <form action="/login" method="post">
+                        <div class="form-group row">
+                            <label for="email" class="col-sm col-form-label wrapper text-right">School e-mail:</label>
+                            <div class="col-sm">
+                                <input type="email" name="email" size="30" value="{{email}}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="password" class="col-sm col-form-label wrapper text-right">Password:</label>
-                        <div class="col-sm">
-                            <input type="password" id="password" placeholder="8 - 20 characters, no spaces" size="30">
+                        <div class="form-group row">
+                            <label for="password" class="col-sm col-form-label wrapper text-right">Password:</label>
+                            <div class="col-sm">
+                                <input type="password" name="password" size="30">
+                            </div>
                         </div>
-                    </div>
-                    <input type="submit" class="btn btn-success mb-2" value="Login">
-                </form>
+                        {% if messages %}
+                            <span class='{{messages[0][0]}}' style="font-size: 14pt">{{messages[0][1]}}</span>
+                        {% endif %}
+                        <br/>
+                        <input type="submit" class="btn btn-success mb-2" value="Login">
+                    </form>
+                {% endwith %}
             </div>
             <div class="col-1 wrapper text-center align-self-center">
                 <h1 style="color:red"><em>OR...</em></h1>

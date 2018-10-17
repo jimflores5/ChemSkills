@@ -40,6 +40,18 @@ class Teachers(db.Model):
         self.password = password
         self.hint = hint
 
+class Users(db.Model):
+    name = db.Column(db.String(20))
+    email = db.Column(db.String(60), primary_key=True)
+    password = db.Column(db.String(20))
+    role = db.Column(db.String(10))
+
+    def __init__(self,name,email,password,role):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.role = role
+
 student_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Teacher's e-mail",'teacher_email','email',''),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password','')]
 teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password',''),("Password hint",'hint','text','')]
 #Tuple order = (Input box label, input box name, input box type, placeholder entry)
@@ -59,13 +71,34 @@ def checkRegistration(role,password,confirm,email,temail=''):
 
     return errors
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'register']
+    if request.endpoint not in allowed_routes and 'email' not in session:
+        return redirect('/login')
+
 @app.route('/')
 def mainindex():
+    if 'email' not in session:
+        displayText = 0
+    else:
+        displayText = 1
+    return render_template('mainindex.html',displayText = displayText)
 
-    return render_template('mainindex.html')
-
-@app.route('/login')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email'].lower()
+        password = request.form['password']
+        user = Users.query.filter_by(email=email).first()
+        if user and user.password == password:
+            session['email'] = email
+            return render_template('mainindex.html', title='Main page', text = "Successfully logged in.")
+        elif user and user.password != password:
+            flash('Wrong password.', 'error')
+        elif not user:
+            flash('Incorrect username','error')
+        return render_template('login.html',title='Login to skills practice', email=email)
 
     return render_template('login.html',title='Login to skills practice')
 
@@ -94,6 +127,7 @@ def register():
             else:
                 info_list = teacher_info
                 errors = checkRegistration(role,password,confirm,email)
+                temail = ''
             if True in errors:
                 if errors[0]:
                     flash('Passwords do not match.', 'error')
@@ -104,17 +138,28 @@ def register():
                 return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
                 new_teacher = Teachers(name,email,password,request.form['hint'])
+                new_user = Users(name,email,password,role)
                 db.session.add(new_teacher)
+                db.session.add(new_user)
                 db.session.commit()
+                session['email'] = email
             else: 
                 new_student = Students(name,email,request.form['teacher_email'].lower(),password)
+                new_user = Users(name,email,password,role)
                 db.session.add(new_student)
+                db.session.add(new_user)
                 db.session.commit()
+                session['email'] = email
 
-            return render_template('mainindex.html', title='Main page', text = "Check DB to see if registration was successful.")
+            return render_template('mainindex.html', title='Main page', text = "Successfully registered.")
 
     progress = 0
     return render_template('register.html', title='Register', progress = progress)
+
+@app.route('/logout')
+def logout():
+    del session['email']
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run()
