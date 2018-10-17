@@ -79,11 +79,16 @@ def require_login():
 
 @app.route('/')
 def mainindex():
-    if 'email' not in session:
-        displayText = 0
-    else:
-        displayText = 1
-    return render_template('mainindex.html',displayText = displayText)
+    
+    return render_template('mainindex.html')
+
+@app.route('/namingquizmain', methods=['POST', 'GET'])
+def namingquizmain():
+    if request.method == 'POST':
+        choice = request.form['choice']
+        return render_template('namingquizmain.html',choice=choice)
+    
+    return render_template('namingquizmain.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -93,7 +98,7 @@ def login():
         user = Users.query.filter_by(email=email).first()
         if user and user.password == password:
             session['email'] = email
-            return render_template('mainindex.html', title='Main page', text = "Successfully logged in.")
+            return redirect('/')
         elif user and user.password != password:
             flash('Wrong password.', 'error')
         elif not user:
@@ -151,7 +156,7 @@ def register():
                 db.session.commit()
                 session['email'] = email
 
-            return render_template('mainindex.html', title='Main page', text = "Successfully registered.")
+            return redirect('/')
 
     progress = 0
     return render_template('register.html', title='Register', progress = progress)

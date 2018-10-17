@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+        <div class="ml-3">
+            <a class="btn btn-primary" href="/" role="button" disabled>Main Menu</a>
+        </div>
+        <div class = 'wrapper text-center'>
+            <h1 class="wrapper text-center"><u>Skill Checks - Chemical Nomenclature</u></h1>
+        </div>
+        <div class="mr-3">
+            <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+        </div>
+    </div>  
+    <br/>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-10 wrapper text-center">
+                <h2 style="color:blue"><u>Select a skill to assess</u>:</h2>
+                <form action="/namingquizmain" method="post" style="font-size: 1.5vw">
+                    <div class="row wrapper text-left justify-content-center">
+                        <div class="col-4">
+                            <input type="radio" name="choice" value="nameionic" required>
+                            <label for="choice" style="color:green">Naming Ionic Compounds</label><br/>
+                            <input type="radio" name="choice" value="namecovalent" required>
+                            <label for="choice" style="color:purple">Naming Binary Covalent Compounds</label><br/>
+                            <input type="radio" name="choice" value="ffnionic" required>
+                            <label for="choice" style="color:red">Formulas From Names (Ionic)</label><br/>
+                            <input type="radio" name="choice" value="ffncovalent" required>
+                            <label for="choice" style="color:brown">Formulas From Names (Covalent)</label><br/>
+                            <input type="radio" name="choice" value="allnaming" required>
+                            <label for="choice" style="color:rgb(77, 74, 74)">Practice All Naming</label><br/>
+                        </div>
+                        <div class="col-2">
+                            <label for="choice" style="color:green">(10 questions)</label><br/>
+                            <label for="choice" style="color:purple">(10 questions)</label><br/>
+                            <label for="choice" style="color:red">(10 questions)</label><br/>
+                            <label for="choice" style="color:brown">(10 questions)</label><br/>
+                            <label for="choice" style="color:rgb(77, 74, 74)">(20 questions)</label><br/>
+                        </div>
+                    </div>
+                    <div class="wrapper text-center">
+                        <input class="btn btn-success mb-2" type="submit" value="Go!">
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% if choice %}
+            <div class="wrapper text-center" style="font-size:1.4vw">
+                <p>You chose {{choice}}!</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
