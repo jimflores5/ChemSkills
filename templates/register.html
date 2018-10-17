@@ -39,9 +39,11 @@
                                         {% if info_list[item][1] == 'name' and progress == 2 %}
                                             <input name="{{info_list[item][1]}}" required type='text' value="{{name}}" size = "30">
                                         {% elif info_list[item][1] == 'school_email' and progress == 2 %}
-                                            <input name="{{info_list[item][1]}}" required type='text' value="{{email}}" size = "30">
+                                            <input name="{{info_list[item][1]}}" required type='email' value="{{email}}" size = "30">
+                                        {% elif info_list[item][1] == 'teacher_email' and progress == 2 %}
+                                            <input name="{{info_list[item][1]}}" required type='email' value="{{temail}}" size = "30">
                                         {% else%}
-                                            <input name="{{info_list[item][1]}}" required {% if info_list[item][1] == 'password' or info_list[item][1]=='confirm' %} type="password"{% else %} type='text' {% endif %} placeholder="{{info_list[item][2]}}"size = "30">
+                                            <input name="{{info_list[item][1]}}" type="{{info_list[item][2]}}" placeholder="{{info_list[item][3]}}"size = "30" required>
                                         {% endif %}
                                     </div>
                                 </div>

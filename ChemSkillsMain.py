@@ -40,8 +40,24 @@ class Teachers(db.Model):
         self.password = password
         self.hint = hint
 
-student_info = [("Name",'name',''), ("School e-mail",'school_email','This will be your username'),("Teacher's e-mail",'teacher_email',''),("Password",'password','Do not share...'), ("Confirm password",'confirm','')]
-teacher_info = [("Name",'name',''), ("School e-mail",'school_email','This will be your username'),("Password",'password','Do not share...'), ("Confirm password",'confirm',''),("Password hint",'hint','')]
+student_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Teacher's e-mail",'teacher_email','email',''),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password','')]
+teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password',''),("Password hint",'hint','text','')]
+#Tuple order = (Input box label, input box name, input box type, placeholder entry)
+
+def checkRegistration(role,password,confirm,email,temail=''):
+    errors = [False,False,False] #[Password error,current user,teacher e-mail check]
+    if password != confirm:
+        errors[0] = True        #Passwords do not match.
+    if role == "Student":
+        if Students.query.filter_by(school_email=email).first():  #Check current DB for student's email.
+            errors[1] = True    #Already registered.
+        if not Teachers.query.filter_by(email=temail).first():  #Check DB for teacher's email.
+            errors[2] = True    #Teacher e-mail not in DB.
+    else:
+        if Teachers.query.filter_by(email=email).first():  #Check current DB for teacher's email.
+            errors[1] = True    #Already registered.
+
+    return errors
 
 @app.route('/')
 def mainindex():
@@ -71,13 +87,21 @@ def register():
             email = request.form['school_email'].lower()
             password = request.form['password']
             confirm = request.form['confirm']
-            if password != confirm:
-                flash('Passwords do not match', 'error')
-                if role == 'Teacher':
-                    info_list = teacher_info
-                else:
-                    info_list = student_info
-                return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email)
+            if role == 'Student':
+                info_list = student_info
+                temail = request.form['teacher_email'].lower()
+                errors = checkRegistration(role,password,confirm,email,temail)
+            else:
+                info_list = teacher_info
+                errors = checkRegistration(role,password,confirm,email)
+            if True in errors:
+                if errors[0]:
+                    flash('Passwords do not match.', 'error')
+                if errors[1]:
+                    flash('School e-mail already registered.','error')
+                if errors[2]:
+                    flash("Teacher e-mail not found. Try again, or use NoTeacher@school.edu to register outside of your class.",'error')
+                return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
                 new_teacher = Teachers(name,email,password,request.form['hint'])
                 db.session.add(new_teacher)
