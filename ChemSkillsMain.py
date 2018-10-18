@@ -79,8 +79,8 @@ def require_login():
 
 @app.route('/')
 def mainindex():
-    
-    return render_template('mainindex.html')
+    role = session.get('role', None)
+    return render_template('mainindex.html',title="Chem Skills Home",role=role)
 
 @app.route('/namingquizmain', methods=['POST', 'GET'])
 def namingquizmain():
@@ -98,6 +98,7 @@ def login():
         user = Users.query.filter_by(email=email).first()
         if user and user.password == password:
             session['email'] = email
+            session['role'] = user.role
             return redirect('/')
         elif user and user.password != password:
             flash('Wrong password.', 'error')
@@ -147,15 +148,14 @@ def register():
                 db.session.add(new_teacher)
                 db.session.add(new_user)
                 db.session.commit()
-                session['email'] = email
             else: 
                 new_student = Students(name,email,request.form['teacher_email'].lower(),password)
                 new_user = Users(name,email,password,role)
                 db.session.add(new_student)
                 db.session.add(new_user)
                 db.session.commit()
-                session['email'] = email
-
+            session['role'] = role    
+            session['email'] = email
             return redirect('/')
 
     progress = 0

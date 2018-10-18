@@ -13,28 +13,49 @@
         </div>
     </div>  
     <br/>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col wrapper text-center">
-                <h1><u>Tutorials & Practice</u></h1>
-                <h2>Select a topic:</h2>
-                <div class=btn-group-vertical>
-                    <a href="/" class="btn btn-success mb-2 disabled" role="button">Significant Figures & Scientific Notation</a>
-                    <a href="/" class="btn btn-success mb-2 disabled" role="button">Metric System</a>
-                    <a class="btn btn-success mb-2 disabled" href="/" role="button">Chemical Names & Formulas</a>
-                    <a class="btn btn-success disabled" href="/" role="button">Other</a>
+    {% if role == 'Student' %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col wrapper text-center">
+                    <h1 style="color:green"><u>Tutorials & Practice</u></h1>
+                    <h2 style="color:green">Select a topic:</h2>
+                    <div class=btn-group-vertical>
+                        <a href="/" class="btn btn-success mb-2 disabled" role="button">Significant Figures & Scientific Notation</a>
+                        <a href="/" class="btn btn-success mb-2 disabled" role="button">Metric System</a>
+                        <a class="btn btn-success mb-2 disabled" href="/" role="button">Chemical Names & Formulas</a>
+                        <a class="btn btn-success disabled" href="/" role="button">Other</a>
+                    </div>
+                </div>
+                <div class = 'col wrapper text-center'>
+                    <h1 style="color:blue"><u>Skill Checks</u></h1>
+                    <h2 style="color:blue">Select an option:</h2>
+                    <div class=btn-group-vertical>
+                        <a href="/" class="btn btn-primary mb-2 disabled" role="button">Significant Figures & Scientific Notation</a>
+                        <a href="/" class="btn btn-primary mb-2 disabled" role="button">Metric System</a>
+                        <a class="btn btn-primary mb-2" href="/namingquizmain" role="button">Chemical Names & Formulas</a>
+                        <a class="btn btn-primary disabled" href="/" role="button">Other</a>
+                    </div>
                 </div>
             </div>
-            <div class = 'col wrapper text-center'>
-                <h1><u>Skill Checks</u></h1>
-                <h2>Select an option:</h2>
-                <div class=btn-group-vertical>
-                    <a href="/" class="btn btn-primary mb-2 disabled" role="button">Significant Figures & Scientific Notation</a>
-                    <a href="/" class="btn btn-primary mb-2 disabled" role="button">Metric System</a>
-                    <a class="btn btn-primary mb-2" href="/namingquizmain" role="button">Chemical Names & Formulas</a>
-                    <a class="btn btn-primary disabled" href="/" role="button">Other</a>
+        {% else %}
+            <div class="container-fluid wrapper text-center">
+                <div class="row justify-content-center">
+                    <div class="col-4">
+                        <h2 style="color:gray"><u>Planned teacher options</u>:</h2>
+                        <ul class="wrapper text-left" style="font-size:1.5vw">
+                            <li style="color:blue">Retrieve a roster of all students or students in a selected class</li>
+                            <li style="color:green">View a table showing results for all skills for all students</li>
+                            <li style="color:purple">View a table showing results for all skills for selected students</li>
+                            <li style="color:red">View a table showing results for selected skills for all students</li>
+                            <li style="color:brown">View a table showing results for selected skills for selected students</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+            <hr>
+            <div class="container-fluid wrapper text-center">
+                <h3>(Login as a student to see tutorial, practice and assessment options)</h3>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}  
