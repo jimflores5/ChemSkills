@@ -1,5 +1,108 @@
 {% extends "quizbase.html" %}
 
 {% block content %}
-
+    <div class='wrapper text-left'>
+        {% if choice == 'ffnionic' or choice == 'ffncovalent' %}
+            <h2 class="ml-1"><u>{{instructions[1]}}</u>:</h2>
+        {% else %}
+            <h2 class="ml-1"><u>{{instructions[0]}}</u>:</h2>
+        {% endif %}
+    </div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        <form action="/namingquiz" method="post">
+            <div class="container-fluid" style="font-size:1.4vw">
+                <div class="row justify-content-center">
+                    <div class="col-6">
+                        <ol class="wrapper text-left mt-3">
+                            {% for item in range(5) %}
+                                <li style="color:blue">
+                                    <div class="row">
+                                        <div class="col-4 wrapper text-right">
+                                            <label for="answer{{item}}"><span>
+                                                {{practiceList[item][0]}}
+                                                </span>=</label>
+                                        </div>
+                                        <div class="col-3 wrapper text-center">
+                                            <input onkeyup="display(this,{{item}})" name="answer{{item}}" type="text" value="{{answers[item]}}" size = "10"></br>
+                                        </div>
+                                        <div class="col-1 wrapper text-left">
+                                            {% if correct[item] %}
+                                                <label for="answer{{item}}" style="color:brown" id="dynamicFormula{{item}}">{% for item in practiceList[item][1] %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}</label>
+                                            {% else %}
+                                                <label for="answer{{item}}" style="color:brown" id="dynamicFormula{{item}}"></label>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                                {% if messages %}
+                                    {% set message = messages[item] %}                                        
+                                    <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                {% endif %}
+                                <br/>
+                                <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    <div class="col-6">
+                        <ol start="6" class="wrapper text-left mt-3" style="font-size: 1.4vw">
+                            {% for item in range(5,10) %}
+                                <li style="color:green">
+                                    <div class="row">
+                                        <div class="col-4 wrapper text-right">
+                                            <label for="answer{{item}}"><span>
+                                                {{practiceList[item][0]}}
+                                                </span>=</label>
+                                        </div>
+                                        <div class="col-3 wrapper text-center">
+                                            <input onkeyup="display(this,{{item}})" name="answer{{item}}" type="text" value="{{answers[item]}}" size = "10"></br>
+                                        </div>
+                                        <div class="col-1 wrapper text-left">
+                                            {% if correct[item] %}
+                                                <label for="answer{{item}}" style="color:brown" id="dynamicFormula{{item}}">{% for item in practiceList[item][1] %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}</label>
+                                            {% else %}
+                                                <label for="answer{{item}}" style="color:brown" id="dynamicFormula{{item}}"></label>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                                {% if messages %}
+                                    {% set message = messages[item] %}                                        
+                                    <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                {% endif %}
+                                <br/>
+                                <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    {% if numCorrect != 10 and attempt == 0 %}
+                        <input class="btn btn-success mb-3" type="submit" value="Submit">
+                    {% elif numCorrect != 10 and attempt > 0 %}
+                        <input class="btn btn-success mb-3" type="submit" value="Submit">
+                        <a class="btn btn-primary mb-3" href="/reviewresults" role="button">Skills update</a>
+                    {% else %}
+                        <a class="btn btn-primary mb-3" href="/reviewresults" role="button">Skills update</a>
+                    {% endif %}
+                    <script>
+                        function display(entry,row)
+                        {
+                            var k=entry.value;
+                            var result = '';
+                            digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                            for (char in k){
+                                if (k[char] in digits){
+                                    result += k[char].sub();
+                                }
+                                else{
+                                    result += k[char];
+                                }
+                            }
+                            document.getElementById("dynamicFormula"+String(row)).innerHTML = result;
+                        }
+                    </script>
+                </div>
+            </div>
+        </form>
+    {% endwith %}
 {% endblock %}

@@ -71,6 +71,18 @@ def checkRegistration(role,password,confirm,email,temail=''):
 
     return errors
 
+def chooseCompound(type='all'):  #Temporary function.  TODO - import from NamingPractice.py
+    if type == 'ionic':
+        compound = ("Ionic name","Ionic formula")
+    elif type == 'covalent':
+        compound = ("Covalent name","Covalent formula")
+    else:
+        if random.randint(0,5) == 0:   #20% change to select a bimolecular compound.
+            compound = ("Covalent name","Covalent formula")
+        else: 
+            compound = ("Ionic name","Ionic formula")
+    return compound
+
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'register']
@@ -82,13 +94,38 @@ def mainindex():
     role = session.get('role', None)
     return render_template('mainindex.html',title="Chem Skills Home",role=role)
 
-@app.route('/namingquizmain', methods=['POST', 'GET'])
-def namingquizmain():
+@app.route('/namingquizmenu', methods=['POST', 'GET'])
+def namingquizmenu():
     if request.method == 'POST':
         choice = request.form['choice']
-        return render_template('namingquizmain.html',choice=choice)
+        instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following"]
+        practiceList = []
+        numCorrect = 0
+        answers = []
+        correct = []
+        attempt = 0
+        if choice == 'ffnionic' or choice == 'nameionic':
+            compoundType = 'ionic'
+        elif choice == 'allnaming':
+            compoundType = 'all'
+        else:
+            compoundType = 'covalent'
+        while len(practiceList) != 10:
+            Compound = chooseCompound(compoundType)
+            #if Compound not in practiceList:
+            practiceList.append(Compound)
+        return render_template('namingquiz.html', instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, answers = answers, correct = correct, attempt=attempt)
     
-    return render_template('namingquizmain.html')
+    return render_template('namingquizmenu.html')
+
+@app.route('/namingquiz', methods=['POST', 'GET'])
+def namingquiz():
+    if request.method == 'POST':
+        choice = request.form['choice']
+        
+        return render_template('namingquiz.html',choice=choice)
+    
+    return render_template('namingquizmenu.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
