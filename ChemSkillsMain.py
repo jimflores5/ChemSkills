@@ -3,6 +3,7 @@ from flask import Flask, request, redirect, render_template, session, flash
 import cgi
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
+import NamingPractice
 
 
 app = Flask(__name__)
@@ -71,18 +72,6 @@ def checkRegistration(role,password,confirm,email,temail=''):
 
     return errors
 
-def chooseCompound(type='all'):  #Temporary function.  TODO - import from NamingPractice.py
-    if type == 'ionic':
-        compound = ("Ionic name","Ionic formula")
-    elif type == 'covalent':
-        compound = ("Covalent name","Covalent formula")
-    else:
-        if random.randint(0,5) == 0:   #20% change to select a bimolecular compound.
-            compound = ("Covalent name","Covalent formula")
-        else: 
-            compound = ("Ionic name","Ionic formula")
-    return compound
-
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'register']
@@ -94,38 +83,68 @@ def mainindex():
     role = session.get('role', None)
     return render_template('mainindex.html',title="Chem Skills Home",role=role)
 
-@app.route('/namingquizmenu', methods=['POST', 'GET'])
-def namingquizmenu():
-    if request.method == 'POST':
-        choice = request.form['choice']
-        instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following"]
-        practiceList = []
-        numCorrect = 0
-        answers = []
-        correct = []
-        attempt = 0
-        if choice == 'ffnionic' or choice == 'nameionic':
-            compoundType = 'ionic'
-        elif choice == 'allnaming':
-            compoundType = 'all'
-        else:
-            compoundType = 'covalent'
-        while len(practiceList) != 10:
-            Compound = chooseCompound(compoundType)
-            #if Compound not in practiceList:
-            practiceList.append(Compound)
-        return render_template('namingquiz.html', instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, answers = answers, correct = correct, attempt=attempt)
-    
+@app.route('/namingquizmenu')
+def namingquizmenu():    
+    numQuestions = 0
+    numCorrect = 0
+    session['numQuestions'] = numQuestions
+    session['numCorrect'] = numCorrect
+    session['listAttempt'] = 0
     return render_template('namingquizmenu.html')
 
 @app.route('/namingquiz', methods=['POST', 'GET'])
 def namingquiz():
     if request.method == 'POST':
         choice = request.form['choice']
-        
-        return render_template('namingquiz.html',choice=choice)
+        instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following"]
+        listAttempt = int(session.get('listAttempt',None)) + 1
+        if listAttempt == 1:
+            practiceList = []
+            answers = []
+            correct = []
+            session['numCorrect'] = 0
+            if choice == 'ffnionic' or choice == 'nameionic':
+                compoundType = 'ionic'
+                session['numQuestions'] = 10
+            elif choice == 'allnaming':
+                compoundType = 'all'
+                session['numQuestions'] = 20
+            else:
+                compoundType = 'molecular'
+                session['numQuestions'] = 10
+            while len(practiceList) != 10:
+                Compound = NamingPractice.chooseCompound(compoundType)
+                if Compound not in practiceList:
+                    practiceList.append(Compound)
+            session['listAttempt'] = listAttempt
+            return render_template('namingquiz.html', title="Formulas From Names", instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt)
+        else:
+            numQuestions = session.get('numQuestions', None)
+            answers = []
+            practiceList = []
+            tally = 0
+            correct = []
+            numCorrect = session.get('numCorrect',None)
+            for item in range(10):
+                answers.append(request.form['answer'+str(item)])
+                Compound = (request.form['name'+str(item)],request.form['formula'+str(item)])
+                practiceList.append(Compound)
+                if answers[item] == Compound[1]:
+                    flash(':-)', 'correct')
+                    if listAttempt == 2:
+                        numCorrect += 1
+                    tally += 1
+                    correct.append(True)
+                else:
+                    flash('X', 'error')
+                    correct.append(False)
+            session['numCorrect'] = numCorrect
+            session['listAttempt'] = listAttempt
+            numQuestions = session.get('numQuestions',None)
+            ratioCorrect = round(Decimal(numCorrect/numQuestions*100),1)
+            return render_template('namingquiz.html', title="Formulas From Names", instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, tally=tally, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, ratioCorrect = ratioCorrect, digits = ['0','1','2','3','4','5','6','7','8','9'])
     
-    return render_template('namingquizmenu.html')
+    return redirect('/namingquizmenu')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():

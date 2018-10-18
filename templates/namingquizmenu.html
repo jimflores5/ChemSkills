@@ -17,7 +17,7 @@
         <div class="row justify-content-center">
             <div class="col-10 wrapper text-center">
                 <h2 style="color:blue"><u>Select a skill to assess</u>:</h2>
-                <form action="/namingquizmenu" method="post" style="font-size: 1.5vw">
+                <form action="/namingquiz" method="post" style="font-size: 1.5vw">
                     <div class="row wrapper text-left justify-content-center">
                         <div class="col-4">
                             <input type="radio" name="choice" value="nameionic" required disabled>
@@ -41,14 +41,10 @@
                     </div>
                     <div class="wrapper text-center">
                         <input class="btn btn-success mb-2" type="submit" value="Go!">
+                        <input name="listAttempt" type="hidden" value="0">
                     </div>
                 </form>
             </div>
         </div>
-        {% if choice %}
-            <div class="wrapper text-center" style="font-size:1.4vw">
-                <p>You chose {{choice}}!</p>
-            </div>
-        {% endif %}
     </div>
 {% endblock %}
