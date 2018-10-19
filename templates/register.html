@@ -43,7 +43,7 @@
                                         {% elif info_list[item][1] == 'teacher_email' and progress == 2 %}
                                             <input name="{{info_list[item][1]}}" required type='email' value="{{temail}}" size = "30">
                                         {% else%}
-                                            <input name="{{info_list[item][1]}}" type="{{info_list[item][2]}}" placeholder="{{info_list[item][3]}}"size = "30" required>
+                                            <input name="{{info_list[item][1]}}" type="{{info_list[item][2]}}" placeholder="{{info_list[item][3]}}"size = "30" {% if info_list[item][1] != 'class2' %} required {% endif %}>
                                         {% endif %}
                                     </div>
                                 </div>

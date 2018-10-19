@@ -9,7 +9,7 @@ import NamingPractice
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ChemSkills:4LCProject3@localhost:8889/ChemSkills'
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 db = SQLAlchemy(app)
 app.secret_key = 'yrtsimehc'
 
@@ -33,13 +33,16 @@ class Teachers(db.Model):
     name = db.Column(db.String(20))
     email = db.Column(db.String(60), primary_key=True)
     password = db.Column(db.String(20))
-    hint = db.Column(db.String(100))
+    class1 = db.Column(db.String(15))
+    class2 = db.Column(db.String(15))
+    #students = db.relationship('Students', backref='teacher_email')
 
-    def __init__(self,name,email,password,hint):
+    def __init__(self,name,email,password,class1,class2=''):
         self.name = name
         self.email = email
         self.password = password
-        self.hint = hint
+        self.class1 = class1
+        self.class2 = class2
 
 class Users(db.Model):
     name = db.Column(db.String(20))
@@ -54,8 +57,21 @@ class Users(db.Model):
         self.role = role
 
 student_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Teacher's e-mail",'teacher_email','email',''),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password','')]
-teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password',''),("Password hint",'hint','text','')]
+teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password',''),("Class 1",'class1','text',''),("Class 2",'class2','text','Optional')]
 #Tuple order = (Input box label, input box name, input box type, placeholder entry)
+
+student_display_data = ['ffnI','ffnC']
+student_display_headings = ['Formulas from Names (Ionic)','Formulas from Names (Covalent)']
+
+def extractData(row):
+    all_info = {}
+    data = []
+    for column in row.__table__.columns:
+        all_info[column.name] = str(getattr(row, column.name))
+    for item in all_info:
+        if item in student_display_data:
+            data.append(all_info.get(item))
+    return data
 
 def checkRegistration(role,password,confirm,email,temail=''):
     errors = [False,False,False] #[Password error,current user,teacher e-mail check]
@@ -199,7 +215,7 @@ def register():
                     flash("Teacher e-mail not found. Try again, or use NoTeacher@school.edu to register outside of your class.",'error')
                 return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
-                new_teacher = Teachers(name,email,password,request.form['hint'])
+                new_teacher = Teachers(name,email,password,request.form['class1'],request.form['class2'])
                 new_user = Users(name,email,password,role)
                 db.session.add(new_teacher)
                 db.session.add(new_user)
@@ -221,6 +237,25 @@ def register():
 def logout():
     del session['email']
     return redirect('/')
+
+@app.route('/userinfo', methods=['POST', 'GET'])
+def userinfo():
+    if request.method == 'POST':
+
+        return render_template('userinfo.html')
+
+    email = session.get('email',None)
+    who = Users.query.filter_by(email=email).first()
+    role = who.role
+    if role.lower()== 'teacher':
+        user = Teachers.query.filter_by(email=email).first()
+        user_data = []
+        headings = []
+    else:
+        user = Students.query.filter_by(school_email=email).first()
+        headings = student_display_headings
+        user_data = extractData(user)
+    return render_template('userinfo.html',user=user,role=role, headings = headings, user_data = user_data)
 
 if __name__ == '__main__':
     app.run()

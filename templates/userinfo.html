@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+        <div class="ml-3">
+            <a class="btn btn-primary" href="/" role="button" disabled>Main Menu</a>
+        </div>
+        <div class = 'wrapper text-center'>
+            <h1 class="wrapper text-center"><u>Information</u></h1>
+        </div>
+        <div class="mr-3">
+            <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+        </div>
+    </div> 
+    <br/>
+    <div class="container-fluid" style="font-size:1.5vw">
+        <p><u>Hello {{user.name}}, here is what we have on file for you</u>:</p>
+        {% if role.lower() == "teacher" %}
+            <ul>
+                <li style="color:blue">School e-mail = {{user.email}}</li>
+                <li style="color:green">Class #1 = {{user.class1}}</li>
+                <li style="color:purple">Class #2 = {{user.class2}}</li>
+            </ul>
+        {% else %}
+            <ul>
+                <li style="color:blue">School e-mail = {{user.school_email}}</li>
+                <li style="color:green">Teacher's e-mail = {{user.teacher_email}}</li>
+            </ul>
+            <p><u>Here is a summary of your skills measurements</u>:</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered wrapper text-center" style="font-size:1.1vw">
+                    <thead>
+                    <tr>
+                        <th>Skills:</th>
+                        {% for item in headings %}
+                            <th scope="col">{{item}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Results:</td>
+                        {% for item in user_data %}
+                            <td>{{item}}</td>
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
