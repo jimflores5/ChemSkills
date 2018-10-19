@@ -60,8 +60,12 @@ student_info = [("Name",'name','text',''), ("School e-mail",'school_email','emai
 teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password',''),("Class 1",'class1','text',''),("Class 2",'class2','text','Optional')]
 #Tuple order = (Input box label, input box name, input box type, placeholder entry)
 
-student_display_data = ['ffnI','ffnC']
-student_display_headings = ['Formulas from Names (Ionic)','Formulas from Names (Covalent)']
+quiz_labels = {'nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practicing All Naming'}
+#Dictionary key,value = Quiz menu label : Full skill name
+
+student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','FFNI','FFNC']
+student_display_data = ['ffnI','ffnC']  #Database field names.
+student_display_headings = ['Formulas from Names (Ionic)','Formulas from Names (Covalent)']  #Column names to display on User Info page.
 
 def extractData(row):
     all_info = {}
@@ -72,6 +76,36 @@ def extractData(row):
         if item in student_display_data:
             data.append(all_info.get(item))
     return data
+
+def extractScore(user,skill):
+    all_info = {}
+    for column in user.__table__.columns:
+        all_info[column.name] = str(getattr(user, column.name))
+    for item in all_info:
+        if item == skill:
+            score = Decimal(all_info.get(item))
+    return score
+
+def updateDBscores(student,header,new_value):
+    Students.query.filter_by(id=student.id).update({header: new_value})
+    db.session.commit()
+    return
+
+def determineRank(score):
+    numQuestions = session.get('numQuestions',None)
+    if numQuestions == 20:
+        benchmarks = [90, 75, 60]
+    else:
+        benchmarks = [90, 70, 50]
+    if score < benchmarks[2]:
+        rank = "Minimal"
+    elif score < benchmarks[1]:
+        rank = "Basic"
+    elif score < benchmarks[0]:
+        rank = "Proficient"
+    else:
+        rank = "MASTERY" 
+    return rank
 
 def checkRegistration(role,password,confirm,email,temail=''):
     errors = [False,False,False] #[Password error,current user,teacher e-mail check]
@@ -112,6 +146,7 @@ def namingquizmenu():
 def namingquiz():
     if request.method == 'POST':
         choice = request.form['choice']
+        session['choice'] = choice
         instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following"]
         listAttempt = int(session.get('listAttempt',None)) + 1
         if listAttempt == 1:
@@ -119,7 +154,7 @@ def namingquiz():
             answers = []
             correct = []
             session['numCorrect'] = 0
-            if choice == 'ffnionic' or choice == 'nameionic':
+            if choice == 'ffnI' or choice == 'nameionic':
                 compoundType = 'ionic'
                 session['numQuestions'] = 10
             elif choice == 'allnaming':
@@ -161,6 +196,36 @@ def namingquiz():
             return render_template('namingquiz.html', title="Formulas From Names", instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, tally=tally, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, ratioCorrect = ratioCorrect, digits = ['0','1','2','3','4','5','6','7','8','9'])
     
     return redirect('/namingquizmenu')
+
+@app.route('/updateprogress', methods=['POST', 'GET'])
+def updateprogress():
+    if request.method == 'POST':
+        new_score = request.form['current_score']
+        skill = request.form['skill']
+        choice = session.get('choice',None)
+        email = session.get('email',None)
+        user = Students.query.filter_by(school_email=email).first()
+        updateDBscores(user,choice,new_score)
+
+        return render_template('updateprogress.html', afterUpload = True, skill = skill)
+
+    choice = session.get('choice',None)
+    email = session.get('email',None)
+    for item in quiz_labels:
+        if item == choice:
+            skill = quiz_labels.get(item)
+            user = Students.query.filter_by(school_email=email).first()
+            prev_score = extractScore(user,choice)
+            old_rank = determineRank(prev_score)
+            current_score = round(Decimal(session.get('numCorrect', None)/session.get('numQuestions', None)*100),1)
+            rank = determineRank(current_score)
+    if current_score > prev_score:
+        displayText = 0
+    elif current_score == prev_score:
+        displayText = 1
+    else:
+        displayText = 2
+    return render_template('updateprogress.html',skill = skill, prev_score = prev_score, current_score = current_score, old_rank = old_rank, rank = rank, displayText = displayText)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -235,7 +300,7 @@ def register():
 
 @app.route('/logout')
 def logout():
-    del session['email']
+    session.clear()
     return redirect('/')
 
 @app.route('/userinfo', methods=['POST', 'GET'])

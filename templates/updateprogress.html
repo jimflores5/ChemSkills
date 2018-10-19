@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+        <div class="ml-3">
+            <a class="btn btn-primary" href="/" role="button" disabled>Main Menu</a>
+        </div>
+        <div class = 'wrapper text-center'>
+            <h1 class="wrapper text-center"><u>Update Score</u></h1>
+        </div>
+        <div class="mr-3">
+            <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+        </div>
+    </div> 
+    <br/>
+    {% if not afterUpload %}
+        <div class="container-fluid" style="font-size:1.7vw">
+            <p>Your best result for <span style="color:blue">{{skill}}</span> was <span style="color:blue">{{prev_score}}%</span>.  <span style="color:brown">(<u>{{old_rank}}</u> level understanding)</span></p>
+            <p>Your current score for <span style="color:blue">{{skill}}</span> is <span style="color:red">{{current_score}}%</span>. <span style="color:brown">(<u style="color:red">{{rank}}</u> level understanding)</span></p>
+            <hr>
+            {% if displayText == 0 %}
+                <form action="/updateprogress" method="post">
+                    <div class="wrapper text-center" style="color:green">
+                        <p>CONGRATULATIONS!  Be sure to upload your new high score.</p>
+                        <input class="btn btn-success" type="submit" value="Upload result">
+                        <input name="current_score" type="hidden" value="{{current_score}}">
+                        <input name="skill" type="hidden" value="{{skill}}">
+                    </div>
+            {% elif displayText == 1 %}
+                    <div class="wrapper text-center" style="color:green">
+                        <p> Ok, you maintained your skill level.  Would you like to try again?</p>
+                        <a class="btn btn-success ml-2" href="/namingquiz" role="button">Yes</a>
+                        <a class="btn btn-danger ml-2" href="/" role="button">No</a>
+                    </div>
+            {% else %}
+                    <div class="wrapper text-center" style="color:purple">
+                        <p> Hmmm...  Remember that Effort = Outcome.</p>
+                        <p> Would you like to try the quiz again or check out the unscored tutorial and practice resources?</p>
+                        <a class="btn btn-success ml-2" href="/namingquiz" role="button">Try again</a>
+                        <a class="btn btn-danger ml-2 disabled" href="/" role="button">Tutorial/Practice</a>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="container-fluid wrapper text-center" style="font-size:1.7vw">
+            <p>Your new result for <span style="color:blue">{{skill}}</span> has been uploaded.</p>
+            <p style="color:brown">Would you like to try a different quiz?</p>
+            <a class="btn btn-success ml-2" href="/namingquizmenu" role="button">Sure!</a>
+            <a class="btn btn-danger ml-2" href="/userinfo" role="button">No thanks</a>
+        </div>
+    {% endif %}
+{% endblock %}

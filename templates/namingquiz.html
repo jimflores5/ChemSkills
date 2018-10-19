@@ -13,7 +13,7 @@
         </div>
     </div> 
     <div class='wrapper text-left'>
-        {% if choice == 'ffnionic' or choice == 'ffncovalent' %}
+        {% if choice == 'ffnI' or choice == 'ffnC' %}
             <h2 class="ml-2" style="color:brown"><u>{{instructions[1]}}</u>:</h2>
         {% else %}
             <h2 class="ml-2" style="color:brown"><u>{{instructions[0]}}</u>:</h2>
@@ -112,9 +112,9 @@
                     <input class="btn btn-success" type="submit" value="Submit">
                 {% elif tally != 10 and listAttempt > 1 %}
                     <input class="btn btn-success mr-3" type="submit" value="Check corrections">
-                    <a class="btn btn-primary" href="/reviewresults" role="button">Skills update</a>
+                    <a class="btn btn-primary" href="/updateprogress" role="button">Update progress</a>
                 {% else %}
-                    <a class="btn btn-primary" href="/reviewresults" role="button">Skills update</a>
+                    <a class="btn btn-primary" href="/updateprogress" role="button">Update progress</a>
                 {% endif %}
                 {% if listAttempt > 1 %}
                     <div>
