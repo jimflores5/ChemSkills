@@ -15,6 +15,8 @@
     <div class='wrapper text-left'>
         {% if choice == 'ffnI' or choice == 'ffnC' %}
             <h2 class="ml-2" style="color:brown"><u>{{instructions[1]}}</u>:</h2>
+        {% elif choice == 'allnaming' %}
+            <h2 class="ml-2" style="color:brown"><u>{{instructions[2]}}</u>:</h2>
         {% else %}
             <h2 class="ml-2" style="color:brown"><u>{{instructions[0]}}</u>:</h2>
         {% endif %}
@@ -25,7 +27,7 @@
                 <div class="row justify-content-center">
                     <div class="col-6">
                         <ol class="wrapper text-left mt-3">
-                            {% for item in range(5) %}
+                            {% for item in range(numQuestions//2) %}
                                 <li style="color:blue">
                                     <div class="row">
                                         <div class="col-6 wrapper text-right">
@@ -59,15 +61,15 @@
                                         {% endif %}
                                     </div>
                                 </li>
-                                <br/>
+                                {% if choice != 'allnaming' %}<br/>{% endif %}
                                 <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
                                 <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
                             {% endfor %}
                         </ol>
                     </div>
                     <div class="col-6">
-                        <ol start="6" class="wrapper text-left mt-3" style="font-size: 1.3vw">
-                            {% for item in range(5,10) %}
+                        <ol start="{{numQuestions//2+1}}" class="wrapper text-left mt-3" style="font-size: 1.3vw">
+                            {% for item in range(numQuestions//2,numQuestions) %}
                                 <li style="color:purple">
                                     <div class="row">
                                         <div class="col-6 wrapper text-right">
@@ -75,7 +77,7 @@
                                                 {% set message = messages[item] %}                                        
                                                 <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
                                             {% endif %}
-                                            {% if choice == 'ffnI' or choice == 'ffnC' %}
+                                            {% if choice == 'ffnI' or choice == 'ffnC' or choice == 'allnaming' %}
                                                 <label for="answer{{item}}"><span>{{practiceList[item][0]}}</span>=</label>
                                             {% else %}
                                                 <label for="answer{{item}}"><span>
@@ -84,13 +86,13 @@
                                             {% endif %}
                                         </div>
                                         <div class="col-3 wrapper text-center">
-                                            {% if choice == 'ffnI' or choice == 'ffnC' %}
+                                            {% if choice == 'ffnI' or choice == 'ffnC' or choice == 'allnaming' %}
                                                 <input onkeyup="display(this,{{item}})" name="answer{{item}}" type="text" value="{{answers[item]}}" size = "10"><br/>
                                             {% else %}
                                                 <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="20"><br/>
                                             {% endif %}
                                         </div>
-                                        {% if choice == 'ffnI' or choice == 'ffnC' %}
+                                        {% if choice == 'ffnI' or choice == 'ffnC' or choice == 'allnaming' %}
                                             <div class="col-1 wrapper text-left">
                                                 {% if correct[item] %}
                                                     <label for="answer{{item}}" style="color:brown" id="dynamicFormula{{item}}">{% for item in practiceList[item][1] %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}</label>
@@ -101,7 +103,7 @@
                                         {% endif %}
                                     </div>
                                 </li>
-                                <br/>
+                                {% if choice != 'allnaming' %}<br/>{% endif %}
                                 <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
                                 <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
                             {% endfor %}

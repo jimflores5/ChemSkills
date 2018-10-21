@@ -24,6 +24,7 @@ class Students(db.Model):
     namecovalent = db.Column(db.Integer)
     ffnI = db.Column(db.Integer)
     ffnC = db.Column(db.Integer)
+    allnaming = db.Column(db.Integer)
 
     def __init__(self,name,school_email,teacher_email,password):
         self.name = name
@@ -64,12 +65,12 @@ teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','emai
 #Tuple order = (Input box label, input box name, input box type, placeholder entry)
 
 digits = ['0','1','2','3','4','5','6','7','8','9']
-quiz_labels = {'nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practicing All Naming'}
+quiz_labels = {'nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practice All Naming'}
 #Dictionary key,value = Quiz menu label : Full skill name
 
-student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','Nameionic','Namecovalent','FFNI','FFNC']
-student_display_data = ['nameionic','namecovalent','ffnI','ffnC']  #Database field names.
-student_display_headings = ['Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)']  #Column names to display on User Info page.
+student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','Nameionic','Namecovalent','FFNI','FFNC', 'AllNaming']
+student_display_data = ['nameionic','namecovalent','ffnI','ffnC','allnaming']  #Database field names.
+student_display_headings = ['Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)','Practice All Naming']  #Column names to display on User Info page.
 
 def extractData(row):
     all_info = {}
@@ -155,31 +156,35 @@ def namingquiz():
         choice = request.form['choice']
         if choice == 'ffnI' or choice == 'ffnC':
             title = "Formulas From Names"
+        elif choice == 'allnaming':
+            title = "Practice All Naming"
         else:
             title = "Names From Formulas"
         session['choice'] = choice
-        instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following"]
+        instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following", "Provide the formula or name for each of the following compounds"]
         listAttempt = int(session.get('listAttempt',None)) + 1
         if listAttempt == 1:
             practiceList = []
             answers = []
             correct = []
             session['numCorrect'] = 0
+            if choice == 'allnaming':
+                numQuestions = 20
+            else:
+                numQuestions = 10
             if choice == 'ffnI' or choice == 'nameionic':
                 compoundType = 'ionic'
-                session['numQuestions'] = 10
             elif choice == 'allnaming':
                 compoundType = 'all'
-                session['numQuestions'] = 20
             else:
                 compoundType = 'molecular'
-                session['numQuestions'] = 10
-            while len(practiceList) != 10:
+            while len(practiceList) != numQuestions:
                 Compound = NamingPractice.chooseCompound(compoundType)
                 if Compound not in practiceList:
                     practiceList.append(Compound)
+            session['numQuestions'] = numQuestions
             session['listAttempt'] = listAttempt
-            return render_template('namingquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt, digits = digits)
+            return render_template('namingquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt, digits = digits, numQuestions = numQuestions)
         else:
             numQuestions = session.get('numQuestions', None)
             answers = []
@@ -187,14 +192,14 @@ def namingquiz():
             tally = 0
             correct = []
             numCorrect = session.get('numCorrect',None)
-            for item in range(10):
+            for item in range(numQuestions):
                 try:        #Excecute 'except' if student tries to refresh browser before initial check of answers.
                     answers.append(request.form['answer'+str(item)])
                 except:
                     return redirect('/namingquizmenu')      
                 Compound = (request.form['name'+str(item)],request.form['formula'+str(item)])
                 practiceList.append(Compound)
-                if choice == 'ffnI' or choice == 'ffnC':
+                if choice == 'ffnI' or choice == 'ffnC' or item > 9:
                     if answers[item] == Compound[1]:
                         flash(':-)', 'correct')
                         if listAttempt == 2:

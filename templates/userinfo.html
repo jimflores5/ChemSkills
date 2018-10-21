@@ -26,7 +26,7 @@
                 <li style="color:blue">School e-mail = {{user.school_email}}</li>
                 <li style="color:green">Teacher's e-mail = {{user.teacher_email}}</li>
             </ul>
-            <p><u>Here is a summary of your skills measurements</u>:</p>
+            <p style="color:brown"><u>Summary of your skill assessments</u>:</p>
             <div class="table-responsive">
                 <table class="table table-sm table-bordered wrapper text-center" style="font-size:1.1vw">
                     <thead>
@@ -41,7 +41,7 @@
                     <tr>
                         <td>Results:</td>
                         {% for item in range(user_data|length) %}
-                            <td {% if item%2 == 0 %} style="color:blue" {% endif %}>{{user_data[item]}}%</td>
+                            <td {% if item%2 == 0 %} style="color:blue" {% endif %}>{{user_data[item]}}{% if user_data[item] != 'None' %}%{% endif %}</td>
                         {% endfor %}
                     </tr>
                     </tbody>
