@@ -19,6 +19,8 @@ class Students(db.Model):
     school_email = db.Column(db.String(60), primary_key=True)
     teacher_email = db.Column(db.String(60))
     password = db.Column(db.String(20))
+    nameionic = db.Column(db.Integer)
+    namecovalent = db.Column(db.Integer)
     ffnI = db.Column(db.Integer)
     ffnC = db.Column(db.Integer)
 
@@ -60,12 +62,13 @@ student_info = [("Name",'name','text',''), ("School e-mail",'school_email','emai
 teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','email','This will be your username'),("Password",'password','password','Do not share...'), ("Confirm password",'confirm','password',''),("Class 1",'class1','text',''),("Class 2",'class2','text','Optional')]
 #Tuple order = (Input box label, input box name, input box type, placeholder entry)
 
+digits = ['0','1','2','3','4','5','6','7','8','9']
 quiz_labels = {'nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practicing All Naming'}
 #Dictionary key,value = Quiz menu label : Full skill name
 
-student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','FFNI','FFNC']
-student_display_data = ['ffnI','ffnC']  #Database field names.
-student_display_headings = ['Formulas from Names (Ionic)','Formulas from Names (Covalent)']  #Column names to display on User Info page.
+student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','Nameionic','Namecovalent','FFNI','FFNC']
+student_display_data = ['nameionic','namecovalent','ffnI','ffnC']  #Database field names.
+student_display_headings = ['Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)']  #Column names to display on User Info page.
 
 def extractData(row):
     all_info = {}
@@ -83,11 +86,14 @@ def extractScore(user,skill):
         all_info[column.name] = str(getattr(user, column.name))
     for item in all_info:
         if item == skill:
-            score = Decimal(all_info.get(item))
+            try:
+                score = Decimal(all_info.get(item))
+            except:
+                score = 0.0
     return score
 
 def updateDBscores(student,header,new_value):
-    Students.query.filter_by(id=student.id).update({header: new_value})
+    Students.query.filter_by(id=student.id).update({header: new_value}) #THIS IS IMPORTANT!!!!  Took 2 hours to find this onine.  It updates a single entry in a DB row when the field name varies each instance.
     db.session.commit()
     return
 
@@ -146,6 +152,10 @@ def namingquizmenu():
 def namingquiz():
     if request.method == 'POST':
         choice = request.form['choice']
+        if choice == 'ffnI' or choice == 'ffnC':
+            title = "Formulas From Names"
+        else:
+            title = "Names From Formulas"
         session['choice'] = choice
         instructions = ["Provide the name for each of the following compounds","Provide the chemical formula for each of the following"]
         listAttempt = int(session.get('listAttempt',None)) + 1
@@ -168,7 +178,7 @@ def namingquiz():
                 if Compound not in practiceList:
                     practiceList.append(Compound)
             session['listAttempt'] = listAttempt
-            return render_template('namingquiz.html', title="Formulas From Names", instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt)
+            return render_template('namingquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt, digits = digits)
         else:
             numQuestions = session.get('numQuestions', None)
             answers = []
@@ -180,20 +190,31 @@ def namingquiz():
                 answers.append(request.form['answer'+str(item)])
                 Compound = (request.form['name'+str(item)],request.form['formula'+str(item)])
                 practiceList.append(Compound)
-                if answers[item] == Compound[1]:
-                    flash(':-)', 'correct')
-                    if listAttempt == 2:
-                        numCorrect += 1
-                    tally += 1
-                    correct.append(True)
+                if choice == 'ffnI' or choice == 'ffnC':
+                    if answers[item] == Compound[1]:
+                        flash(':-)', 'correct')
+                        if listAttempt == 2:
+                            numCorrect += 1
+                        tally += 1
+                        correct.append(True)
+                    else:
+                        flash('X', 'error')
+                        correct.append(False)
                 else:
-                    flash('X', 'error')
-                    correct.append(False)
+                    if NamingPractice.checkName(answers[item],practiceList[item][0]):
+                        flash(':-)', 'correct')
+                        if listAttempt == 2:
+                            numCorrect += 1
+                        tally += 1
+                        correct.append(True)
+                    else:
+                        flash('X', 'error')
+                        correct.append(False)
             session['numCorrect'] = numCorrect
             session['listAttempt'] = listAttempt
             numQuestions = session.get('numQuestions',None)
             ratioCorrect = round(Decimal(numCorrect/numQuestions*100),1)
-            return render_template('namingquiz.html', title="Formulas From Names", instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, tally=tally, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, ratioCorrect = ratioCorrect, digits = ['0','1','2','3','4','5','6','7','8','9'])
+            return render_template('namingquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, tally=tally, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, ratioCorrect = ratioCorrect, digits = digits)
     
     return redirect('/namingquizmenu')
 
