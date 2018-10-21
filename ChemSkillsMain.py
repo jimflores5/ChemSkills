@@ -187,7 +187,10 @@ def namingquiz():
             correct = []
             numCorrect = session.get('numCorrect',None)
             for item in range(10):
-                answers.append(request.form['answer'+str(item)])
+                try:        #Excecute 'except' if student tries to refresh browser before initial check of answers.
+                    answers.append(request.form['answer'+str(item)])
+                except:
+                    return redirect('/namingquizmenu')      
                 Compound = (request.form['name'+str(item)],request.form['formula'+str(item)])
                 practiceList.append(Compound)
                 if choice == 'ffnI' or choice == 'ffnC':

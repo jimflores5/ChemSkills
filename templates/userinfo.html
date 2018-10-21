@@ -32,16 +32,16 @@
                     <thead>
                     <tr>
                         <th>Skills:</th>
-                        {% for item in headings %}
-                            <th scope="col">{{item}}</th>
+                        {% for item in range(headings|length) %}
+                            <th scope="col" {% if item%2 == 0 %} style="color:blue" {% endif %}>{{headings[item]}}</th>
                         {% endfor %}
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td>Results:</td>
-                        {% for item in user_data %}
-                            <td>{{item}}</td>
+                        {% for item in range(user_data|length) %}
+                            <td {% if item%2 == 0 %} style="color:blue" {% endif %}>{{user_data[item]}}%</td>
                         {% endfor %}
                     </tr>
                     </tbody>
