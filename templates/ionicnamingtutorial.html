@@ -216,7 +216,7 @@
                                     {% if page == 3 %}
                                         <a class="btn btn-success mb-3" href="/ionicnamingtutorial/{{page+1}}" role="button">Next Page</a>
                                     {% else %}
-                                        <a class="btn btn-primary mb-3" href="/" role="button">Main Menu</a>
+                                        <a class="btn btn-primary mb-3" href="/namingindex" role="button">Naming Menu</a>
                                     {% endif %}
                                 {% endif %}
                             </form>
@@ -266,14 +266,14 @@
                                     <ul class="wrapper text-left mt-3" style="font-size: 1.7vw"></ul>
                                     {% if displayText == 9 %}
                                         <li style="color:blue">
-                                            <label for "response">Identfiy the charge on the anion: </label>
+                                            <label for="response">Identfiy the charge on the anion: </label>
                                             <input name="response" type="text" value="{{response}}" size="1"></br>
                                         </li>
                                     {% endif %}
                                     {% if displayText == 10 %}
                                         <li style="color:blue">Identify the charge on the anion: (2-)</li>
                                         <li style="color:green">
-                                            <label for "response">How many oxide ions are present in the compound? </label>
+                                            <label for="response">How many oxide ions are present in the compound? </label>
                                             <input name="response" type="text" value="{{response}}" size="1"></br>
                                         </li>
                                     {% endif %}
@@ -281,7 +281,7 @@
                                         <li style="color:blue">Identify the charge on the anion: (2-)</li>
                                         <li style="color:green">How many oxide ions are present in the compound? (3)</li>
                                         <li style="color:purple">
-                                            <label for "response">This gives a TOTAL negative charge of: </label>
+                                            <label for="response">This gives a TOTAL negative charge of: </label>
                                             <input name="response" type="text" value="{{response}}" size="1"></br>
                                         </li>
                                     {% endif %}
@@ -290,7 +290,7 @@
                                         <li style="color:green">How many oxide ions are present in the compound? (3)</li>
                                         <li style="color:purple">This gives a TOTAL negative charge of: (6-)</li>
                                         <li style="color:brown">
-                                            <label for "response">To cancel this, the TOTAL positive charge in the compound must be: </label>
+                                            <label for="response">To cancel this, the TOTAL positive charge in the compound must be: </label>
                                             <input name="response" type="text" value="{{response}}" size="1"></br>
                                         </li>
                                     {% endif %}
@@ -300,7 +300,7 @@
                                         <li style="color:purple">This gives a TOTAL negative charge of: (6-)</li>
                                         <li style="color:brown">To cancel this, the TOTAL positive charge in the compound must be: (6+)</li>
                                         <li style="color:red">
-                                            <label for "response">Since there are two Fe ions, EACH must carry a charge of: </label>
+                                            <label for="response">Since there are two Fe ions, EACH must carry a charge of: </label>
                                             <input name="response" type="text" value="{{response}}" size="1"></br>
                                         </li>
                                     {% endif %}
@@ -313,7 +313,7 @@
                                         <li style="color:purple">This gives a TOTAL negative charge of: (6-)</li>
                                         <li style="color:brown">To cancel this, the TOTAL positive charge in the compound must be: (6+)</li>
                                         <li style="color:red">Since there are two Fe ions, EACH must carry a charge of: (3+)</li>
-                                        <li>GOOD! Since each Fe ion carries a 3+ charge, the correct name for the compound is iron (III) oxide.</li>
+                                        <li>GOOD! Since each Fe ion carries a 3+ charge, the correct name for the compound is <u>iron (III) oxide</u>.</li>
                                     {% endif %}
                                     {% if displayText > 14 %}
                                         <li style="color:blue">Note that the Roman numerals do NOT indicate the number of metal atoms in the compound OR the total positive charge.  Instead, the numerals indicate the charge on a SINGLE CATION.</li>

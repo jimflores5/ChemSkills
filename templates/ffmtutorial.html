@@ -33,7 +33,7 @@
                                                 </span>=</label>
                                         </div>
                                         <div class="col-3 wrapper text-center">
-                                            <input onkeyup="display(this,{{item}})" name="answer{{item}}" type="text" value="{{answers[item]}}" size = "10"></br>
+                                            <input onkeyup="display(this,{{item}})" name="answer{{item}}" type="text" value="{{answers[item]}}" size = "10"><br/>
                                         </div>
                                         <div class="col-1 wrapper text-left">
                                             {% if correct[item] %}
@@ -70,7 +70,7 @@
                                 <input class="btn btn-success mb-3" type="submit" value="Check">
                             {% else %}
                                 <a class="btn btn-info mb-3" href="/ffmtutorial/{{page}}" role="button">Refresh Compounds</a>
-                                <a class="btn btn-primary mb-3" href="/" role="button">Main Menu</a>
+                                <a class="btn btn-primary mb-3" href="/namingindex" role="button">Naming Menu</a>
                             {% endif %}
                             <script>
                                 function display(entry,row)

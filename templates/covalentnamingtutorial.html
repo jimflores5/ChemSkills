@@ -19,7 +19,7 @@
                                 <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.75vw">
                                     {% for item in range(4) %}
                                     <li style="color:blue">
-                                        <label for "answer{{item}}"><span>
+                                        <label for="answer{{item}}"><span>
                                             {% for char in practiceList[item][1] %}{% if char in digits %}<sub>{{char}}</sub>{% else %}{{char}}{% endif %}{% endfor %}
                                             </span>= </label>
                                         <input type="radio" name="answer{{item}}" value="ionic" required {% if answers[item] == 'ionic' %} checked {% endif %}> <span style="font-size: 1.5vw; color:black">Ionic</span>
@@ -68,10 +68,10 @@
                                 <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.75vw">
                                     {% for item in range(4) %}
                                     <li style="color:blue">
-                                        <label for "answer{{item}}"><span>
+                                        <label for="answer{{item}}"><span>
                                             {% for char in practiceList[item][1] %}{% if char in digits %}<sub>{{char}}</sub>{% else %}{{char}}{% endif %}{% endfor %}
                                             </span>= </label>
-                                        <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="20"></br>
+                                        <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="20"><br/>
                                     </li>
                                     {% if messages %}
                                         {% set message = messages[item] %}                                        
@@ -103,7 +103,7 @@
                                     {% if page == 1 %}
                                         <a class="btn btn-success mb-3" href="/covalentnamingtutorial/{{page+1}}" role="button">Next Page</a>
                                     {% else %}
-                                        <a class="btn btn-primary mb-3" href="/" role="button">Main Menu</a>
+                                        <a class="btn btn-primary mb-3" href="/namingindex" role="button">Naming Menu</a>
                                     {% endif %}
                                 {% endif %}
                             </form>
