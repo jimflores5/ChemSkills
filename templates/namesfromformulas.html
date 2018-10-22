@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class='wrapper text-center'>
+        <h1><u>Names from Formulas</u></h1>
+        <br/>
+        <h2>Provide the name for: <span style="color:blue">
+            {% for item in formula %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}
+            </span></h2><br/>
+        {% with messages = get_flashed_messages(with_categories=True) %} 
+        <form action="/namesfromformulas/{{type}}" method="post">
+            <label for="answer" style="font-size: 16pt; color:blue">Name: </label>
+            <input name="answer" type="text" value="{{answer}}" style="font-size: 16pt" size = "28"></br>
+            {% for category,message in messages %}
+                {% if category != 'error' %}
+                    <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                {% else %}
+                    <div class="btn-group dropright">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14pt; color:red">
+                            {{message}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <p class="dropdown-item" style="font-size: 24pt; color:red">{{name}}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br/>
+            <input name="name" type="hidden" value="{{name}}">
+            <input name="formula" type="hidden" value="{{formula}}">
+            <input name="firstAttempt" type="hidden" value="{{firstAttempt}}">
+        </form>
+        {% endwith %}
+        <p style="font-size: 16pt; color:purple">(Hit 'Return' or 'Enter' to check your answer)</p>
+        <div>
+            <a class="btn btn-primary" href="{{type}}" role="button">Next Practice Formula</a>
+            <a class="btn btn-danger" href='/' role="button">Main Menu</a>
+        </div>
+        <hr>
+        <div>
+            Percent Correct = {{nameCorrect}}/{{nameAttempts}} = {{ratioCorrect}}%
+        </div>
+        <hr>
+    </div>
+{% endblock %}    

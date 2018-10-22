@@ -117,9 +117,8 @@ def checkResponse(response,displayText):
         return False
 
 
-@app.route('/')
-def index():
-    session.clear()
+@app.route('/namingindex')
+def namingindex():
     nameAttempts = 0
     nameCorrect = 0
     formAttempts = 0
@@ -128,7 +127,7 @@ def index():
     session['nameCorrect'] = nameCorrect
     session['formAttempts'] = formAttempts
     session['formCorrect'] = formCorrect
-    return render_template('index.html',title="Naming Practice")
+    return render_template('namingindex.html',title="Naming Practice")
 
 @app.route('/namesfromformulas/<type>',methods=['POST', 'GET'])
 def namesfromformulas(type):

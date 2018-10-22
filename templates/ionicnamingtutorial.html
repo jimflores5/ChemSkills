@@ -1,0 +1,373 @@
+{% extends "ionicnamingbase.html" %}
+
+{% block content %}
+    <div class='wrapper text-left'>
+        {% if page == 1 %}
+            <h2 class="ml-1"><u>First, the basics</u>:</h2>
+            <div class="container-fluid justify-content-between">
+                <div class="row">
+                    <div class="col-7">
+                        <form action="/ionicnamingtutorial/{{page}}" method="post">
+                            <ul style="font-size:1.7vw">
+                                <li>An ionic comound combines a positivly charged ion (a <span style="color:blue">cation</span>) with a negatively charged ion (an <span style="color:red">anion</span>).</li>
+                                {% if displayText > 1 %}
+                                    <li style="color:purple">The total positive charge from the cations must equal the total negative charge from the anions.</li>
+                                {% endif %}
+                                {% if displayText > 2 %}
+                                    <li>To write the name for a given chemical formula, you must be able to:</li>
+                                    <ul>
+                                        <li style="color:green">Identify if an element is a metal or a nonmetal.</li>
+                                {% endif %}
+                                {% if displayText > 3 %}
+                                    <li style="color:brown">Distinguish between monatomic and polyatomic ions.</li>
+                                {% endif %}
+                                </ul>
+                            </ul>
+                            <div class="wrapper text-center">
+                                {% if displayText <=2 %}
+                                    <input class="btn btn-danger" type="submit" value="More...">
+                                {% elif displayText == 3 %}
+                                    <a class="btn btn-danger" href="/IDthemetals" role="button">How Do I Do This?</a>
+                                    <input class="btn btn-success" type="submit" value="Got it!">
+                                {% else %}
+                                    <a class="btn btn-danger" href="/idpolyatomics" role="button">How Do I Do This?</a>
+                                    <a class="btn btn-success" href="/ionicnamingtutorial/{{page+1}}" role="button">Got it!</a>
+                                {% endif %}
+                                <input name="page" type="hidden" value="{{page}}">
+                                <input name="displayText" type="hidden" value="{{displayText}}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-5">
+                        <figure class="figure">
+                            {% if displayText == 1 %}
+                                <img src="{{url_for('static', filename='IonicBasics1.png')}}" class="figure-img img-fluid">
+                            {% elif displayText <= 3 %}
+                                <img src="{{url_for('static', filename='IonicBasics2.png')}}" class="figure-img img-fluid">
+                            {% elif displayText == 4 %}
+                                <img src="{{url_for('static', filename='IonicBasics3.png')}}" class="figure-img img-fluid">
+                            {% endif %}
+                        </figure>
+                    </div>
+                </div>
+
+        {% elif page == 2 %}
+            <h2 class="ml-1"><u>How to name ions</u>:</h2>
+            <form action="/ionicnamingtutorial/{{page}}" method="post">
+                <div class="container-fluid justify-content-between">
+                    <div class="row justify-content-center">
+                        <div class="col-5">
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header p-1" id="headingOne">
+                                        <h3 class="card-link mb-0 text-center" style="color:blue" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> 
+                                            Naming cations (Click to view)
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
+                                            <div class="card-body">
+                                                <figure class = "figure">
+                                                    <img src="{{url_for('static', filename='NamingCations.png')}}" class="figure-img img-fluid">
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header p-1" id="headingTwo">
+                                        <h3 class="mb-0 text-center collapsed card-link" style="color:red" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"> 
+                                            Naming monatomic anions (Click to view)
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                            <div class="card-body">
+                                                <figure class = "figure">
+                                                    <img src="{{url_for('static', filename='MonatomicAnions.png')}}" class="figure-img img-fluid">
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row justify-content-center">
+                        <div class="col-5">
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header p-1" id="headingThree">
+                                        <h3 class="mb-0 text-center" style="color:purple" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree"> 
+                                            Naming polyatomic anions (Click to view)
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                                            <div class="card-body">
+                                                <figure class = "figure">
+                                                    <img src="{{url_for('static', filename='PolyatomicAnions.png')}}" class="figure-img img-fluid">
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header p-1" id="headingFour">
+                                        <h3 class="mb-0 text-center" style="color:brown" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour"> 
+                                            Polyatomic Ion List (Click to view)
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                                            <div class="card-body">
+                                                <figure class = "figure">
+                                                    <img src="{{url_for('static', filename='IonList.png')}}" class="figure-img img-fluid">
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='wrapper text-center'>
+                    <input name="page" type="hidden" value="{{page}}">
+                    <input name="displayText" type="hidden" value="{{displayText}}">
+                </div>
+            </form>
+
+        {% elif page == 3 or page == 5 %}
+            {% if page == 3 %}
+                <h2 class="ml-1"><u>Steps for naming (Part 1)</u>:</h2>
+            {% else %}
+                <h2 class="ml-1"><u>Practice using Roman numerals</u>:</h2>
+            {% endif %}
+            <div class="container-fluid border-0" style="font-size:1.75vw">
+                <div class="row justify-content-left wrapper text-center">
+                    {% if page == 3 %}
+                        <div class="col-5 border">
+                            <p style="color:green">Watch the video first, then try the practice problems.</p>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <video controls src="{{url_for('static', filename='IonicNaming1.mov')}}"></video>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-5 wrapper text-left border">
+                            <p><u>Summary of steps</u>:</p>
+                            <ol>
+                                <li style="color:blue">Identify the charge on the <em>anion</em>.</li>
+                                <li style="color:green">Determine the TOTAL negative charge in the compound (number of anions x charge).</li>
+                                <li style="color:purple">Identify the TOTAL positive charge in the compound.</li>
+                                <li style="color:red">Identify the charge on EACH cation (this gives the Roman numeral).</li>
+                                <li style="color:black">Name = Cation (Roman numeral) anion.</li>
+                            </ol>
+                        </div>
+                    {% endif %}
+                    <div class="col-7 border wrapper text-center">
+                        <p style="color:brown"><u>Provide the name for each of the following compounds</u>:</p>
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                            <form action="/ionicnamingtutorial/{{page}}" method="post">
+                                <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.75vw">
+                                    {% for item in range(4) %}
+                                    <li style="color:blue">
+                                        <label for="answer{{item}}"><span>
+                                            {% for char in practiceList[item][1] %}{% if char in digits %}<sub>{{char}}</sub>{% else %}{{char}}{% endif %}{% endfor %}
+                                            </span>= </label>
+                                        <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="28"><br/>
+                                    </li>
+                                    {% if messages %}
+                                        {% set message = messages[item] %}                                        
+                                        {% if message[0] != 'error' %}
+                                            <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                        {% else %}
+                                            <div class="btn-group dropright">
+                                                <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14pt; color:red">
+                                                    <span class='{{message[0]}}'>{{message[1]}}</span>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <p class="dropdown-item" style="font-size: 20pt; color:red">{{practiceList[item][0]}}</p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                        <hr>
+                                        <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                        <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="displayText" type="hidden" value="{{displayText}}">
+                                        <input name="page" type="hidden" value="{{page}}">
+                                    {% endfor %}
+                                </ul>
+                                {% if numCorrect != 4 %}
+                                    <input class="btn btn-success mb-3" type="submit" value="Check">
+                                    <a class="btn btn-info mb-3" href="/ionicnamingtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                {% else %}
+                                    <a class="btn btn-info mb-3" href="/ionicnamingtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                    {% if page == 3 %}
+                                        <a class="btn btn-success mb-3" href="/ionicnamingtutorial/{{page+1}}" role="button">Next Page</a>
+                                    {% else %}
+                                        <a class="btn btn-primary mb-3" href="/" role="button">Main Menu</a>
+                                    {% endif %}
+                                {% endif %}
+                            </form>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <h2 class="ml-1"><u>Steps for naming (Part 2 - Roman Numerals)</u>:</h2>
+            <div class="container-fluid justify-content-between">
+                <div class="row">
+                    <div class="col-7">
+                        <form action="/ionicnamingtutorial/{{page}}" method="post">
+                            <ul style="font-size:1.7vw">
+                                {% if displayText < 5 %}
+                                    <li>Examine the two compounds at the right.</li>
+                                    {% if displayText > 1 %}
+                                        <li style="color:purple">If we follow the rules for naming ionic compounds (name the cation, name the anion), we see that the <u style="color:red"><em>SAME NAME</em></u> describes two <u style="color:red"><em>DIFFERENT</em></u> compounds.</li>
+                                    {% endif %}
+                                    {% if displayText > 2 %}
+                                        <li>The reason different compounds form between iron (Fe) and oxygen (O) is that iron forms one of two possible cations - Fe<sup>2+</sup> OR Fe<sup>3+</sup>.</li>
+                                    {% endif %}
+                                    {% if displayText > 3 %}
+                                        <li style="color:purple">To deal with this, we must identify the charge on the iron and then <span style="color:blue"><em>INDICATE THAT CHARGE</em></span> in the name.</li>
+                                    {% endif %}
+                                {% elif displayText < 9 %}
+                                    {% if displayText > 4 %}
+                                        <li>To identify the charge on the Fe, look at the <span style="color:red"><u>anion</u></span>, which in this case is <span style="color:red">oxide.</span></li>
+                                    {% endif %}
+                                    {% if displayText > 5 %}
+                                        <li style="color:purple">The oxide ion carries a charge of 2-, and there is only one of these ions in the compound.</li>
+                                    {% endif %}
+                                    {% if displayText > 6 %}
+                                        <li>To make the compound neutral overall, the iron MUST carry a charge of 2+.</li>
+                                    {% endif %}
+                                    {% if displayText > 7 %}
+                                        <li style="color:green"><u>To correctly name the compound</u>:</li>
+                                        <ol type='a'>
+                                            <li style="color:blue">Name the metal,</li>
+                                            <li style="color:purple">Use ROMAN NUMERALS to indicate the charge on the metal,</li>
+                                            <li style="color:red">Name the anion.</li>
+                                        </ol>
+                                    {% endif %}
+                                {% elif displayText >= 9 %}
+                                {% with messages = get_flashed_messages(with_categories=True) %}
+                                    <li>Now look at Fe<sub>2</sub>O<sub>3</sub> and answer the following:</li>
+                                    <ul class="wrapper text-left mt-3" style="font-size: 1.7vw"></ul>
+                                    {% if displayText == 9 %}
+                                        <li style="color:blue">
+                                            <label for "response">Identfiy the charge on the anion: </label>
+                                            <input name="response" type="text" value="{{response}}" size="1"></br>
+                                        </li>
+                                    {% endif %}
+                                    {% if displayText == 10 %}
+                                        <li style="color:blue">Identify the charge on the anion: (2-)</li>
+                                        <li style="color:green">
+                                            <label for "response">How many oxide ions are present in the compound? </label>
+                                            <input name="response" type="text" value="{{response}}" size="1"></br>
+                                        </li>
+                                    {% endif %}
+                                    {% if displayText == 11 %}
+                                        <li style="color:blue">Identify the charge on the anion: (2-)</li>
+                                        <li style="color:green">How many oxide ions are present in the compound? (3)</li>
+                                        <li style="color:purple">
+                                            <label for "response">This gives a TOTAL negative charge of: </label>
+                                            <input name="response" type="text" value="{{response}}" size="1"></br>
+                                        </li>
+                                    {% endif %}
+                                    {% if displayText == 12 %}
+                                        <li style="color:blue">Identify the charge on the anion: (2-)</li>
+                                        <li style="color:green">How many oxide ions are present in the compound? (3)</li>
+                                        <li style="color:purple">This gives a TOTAL negative charge of: (6-)</li>
+                                        <li style="color:brown">
+                                            <label for "response">To cancel this, the TOTAL positive charge in the compound must be: </label>
+                                            <input name="response" type="text" value="{{response}}" size="1"></br>
+                                        </li>
+                                    {% endif %}
+                                    {% if displayText == 13 %}
+                                        <li style="color:blue">Identify the charge on the anion: (2-)</li>
+                                        <li style="color:green">How many oxide ions are present in the compound? (3)</li>
+                                        <li style="color:purple">This gives a TOTAL negative charge of: (6-)</li>
+                                        <li style="color:brown">To cancel this, the TOTAL positive charge in the compound must be: (6+)</li>
+                                        <li style="color:red">
+                                            <label for "response">Since there are two Fe ions, EACH must carry a charge of: </label>
+                                            <input name="response" type="text" value="{{response}}" size="1"></br>
+                                        </li>
+                                    {% endif %}
+                                    {% for category,message in messages %}                                      
+                                        <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                                    {% endfor %}
+                                    {% if displayText > 13 %}
+                                        <li style="color:blue">Identify the charge on the anion: (2-)</li>
+                                        <li style="color:green">How many oxide ions are present in the compound? (3)</li>
+                                        <li style="color:purple">This gives a TOTAL negative charge of: (6-)</li>
+                                        <li style="color:brown">To cancel this, the TOTAL positive charge in the compound must be: (6+)</li>
+                                        <li style="color:red">Since there are two Fe ions, EACH must carry a charge of: (3+)</li>
+                                        <li>GOOD! Since each Fe ion carries a 3+ charge, the correct name for the compound is iron (III) oxide.</li>
+                                    {% endif %}
+                                    {% if displayText > 14 %}
+                                        <li style="color:blue">Note that the Roman numerals do NOT indicate the number of metal atoms in the compound OR the total positive charge.  Instead, the numerals indicate the charge on a SINGLE CATION.</li>
+                                    {% endif %}
+                                    {% if displayText > 15 %}
+                                        <li style="color:green">Roman numerals are ONLY used if the metal can hold more than one value for the positive charge.</li>
+                                    {% endif %}
+                                    {% if displayText > 16 %}
+                                        <li style="color:purple">Now practice adding Roman numerals when naming ionic compounds.</li>
+                                    {% endif %} 
+                                {% endwith %}                                   
+                                {% endif %}
+                                </ul>
+                            </ul>
+                            <div class="wrapper text-center">
+                                {% if displayText == 1 or (displayText >= 4 and displayText < 9) or (displayText > 13 and displayText < 17) %}
+                                    <input class="btn btn-danger" type="submit" value="OK">
+                                {% elif displayText == 2 %}
+                                    <input class="btn btn-success" type="submit" value="NOPE!  Gotta fix this!">
+                                {% elif displayText == 3 %}
+                                    <a class="btn btn-danger" href="/multiplecharges" role="button">Which metals can do this?</a>
+                                    <input class="btn btn-success" type="submit" value="Got it!">
+                                {% elif displayText == 17 %}
+                                    <a class="btn btn-danger" href="/ionicnamingtutorial/{{page+1}}" role="button">Next Page</a>
+                                {% else %}
+                                    <input class="btn btn-success" type="submit" value="Check">
+                                {% endif %}
+                                <input name="page" type="hidden" value="{{page}}">
+                                <input name="displayText" type="hidden" value="{{displayText}}">
+                                <input name="response" type="hidden" value="{{response}}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-5 wrapper text-center">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename=imageName)}}" class="figure-img img-fluid">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if page == 3 or page == 5 %}
+            <div class="col-6 wrapper text-center">
+                <button class="btn-sm btn-danger mt-2" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Polyatomic Ion List
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='IonList.png')}}" class="figure-img img-fluid">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}   

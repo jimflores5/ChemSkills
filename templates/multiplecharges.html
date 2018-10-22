@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{{title}}</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <style>
+            .correct {color:green}
+            .error {
+                color:red;
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            h2{
+                font-size:2.5vw;
+            }
+            h1{
+                font-size:3vw;
+            }
+            h3{
+                font-size:2vw;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid border-0 wrapper text-left" style="font-size:1.75vw">
+            <div class="row justify-content-left wrapper text-left">
+                <div class="col-6" style="border:1px">
+                    <h1><u>Which metals form only ONE cation?</u></h1>
+                </div>
+                <div class="col-2">
+                    <form action="/multiplecharges" method="post">
+                        <input class="btn-lg btn-primary mt-2" type="submit" value="Return to Tutorial">
+                        <input name="done" type="hidden" value="1">
+                        <input name="page" type="hidden" value="{{page}}">
+                    </form>
+                </div>
+            </div>
+        </div>
+        </br>
+        <div class="container-fluid border-top" style="font-size:1.75vw">
+            <div class="row justify-content-left wrapper text-center">
+                <div class="col-6">
+                    <p style="color:green">Watch the video first, then try the practice problems.</p>
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <video controls src="{{url_for('static', filename='MultipleCharges.mov')}}"></video>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <form action="/multiplecharges" method="post">
+                        <p style="color:brown"><u>Which of the following metals form ONLY ONE possible cation?  (Check all that apply)</u></p>
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                            <form action="/multiplecharges" method="post">
+                                <div class="form-check">
+                                    {% for item in range(4) %}
+                                        <label class="form-check-label" for="answer{{item}}">
+                                            <input type="checkbox" class="form-check-input" id="check1" name="answers" value="{{metals[item][0]}}" {% if metals[item][0] in answers %} checked {% endif %}>{{metals[item][0]}}
+                                        </label>
+                                        <input name="symbol{{item}}" type="hidden" value="{{metals[item][0]}}">
+                                        <input name="type{{item}}" type="hidden" value="{{metals[item][1]}}">
+                                        <hr>
+                                    {% endfor %}
+                                </div>
+                                <input name="page" type="hidden" value="{{page}}">
+                                {% if not allCorrect %}
+                                    <a class="btn btn-info mb-3" href="/multiplecharges" role="button">Refresh Metals</a>
+                                    <input class="btn btn-success mb-3" type="submit" value="Check">
+                                    <input name="done" type="hidden" value="0">
+                                {% else %}
+                                    <a class="btn btn-info mb-3" href="/multiplecharges" role="button">Refresh Metals</a>
+                                    <input class="btn btn-success mb-3" type="submit" value="Got it!">
+                                    <input name="done" type="hidden" value="1">
+                                {% endif %}
+                                {% if messages %}
+                                    <div>
+                                        <span class='{{messages[0][0]}}' style="font-size: 14pt">{{messages[0][1]}}</span>
+                                    </div>
+                                {% endif %}
+                            </form>
+                        {% endwith %}
+                        <input name="page" type="hidden" value="1">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> 
+        <script type="text/javascript">
+            $('[data-toggle="tooltip"]').tooltip();
+        </script>
+    </body>
+</html>

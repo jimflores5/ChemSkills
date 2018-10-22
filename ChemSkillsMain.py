@@ -4,9 +4,10 @@ import cgi
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
 import NamingPractice
-
+from NamingBlueprints import naming_practice_blueprint
 
 app = Flask(__name__)
+app.register_blueprint(naming_practice_blueprint)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ChemSkills:4LCProject3@localhost:8889/ChemSkills'
 app.config['SQLALCHEMY_ECHO'] = False
@@ -193,7 +194,7 @@ def namingquiz():
             correct = []
             numCorrect = session.get('numCorrect',None)
             for item in range(numQuestions):
-                try:        #Excecute 'except' if student tries to refresh browser before initial check of answers.
+                try:        #Excecute 'except' if student tries to refresh browser before first check of answers.
                     answers.append(request.form['answer'+str(item)])
                 except:
                     return redirect('/namingquizmenu')      

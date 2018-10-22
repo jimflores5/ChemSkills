@@ -1,0 +1,142 @@
+{% extends "covalentnamingbase.html" %}
+
+{% block content %}
+    <div class='wrapper text-left'>
+        {% if page == 1 %}
+            <h2 class="ml-1"><u>Critical Information</u>:</h2>
+            <div class="container-fluid justify-content-between" style="font-size:1.7vw">
+                <div class="row">
+                    <div class="col-5 border-right">
+                        <p style="color:green">Watch the video first, then try the practice problems.</p>
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <video controls src="{{url_for('static', filename='NoIons.mov')}}"></video>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <p style="color:brown"><u>Indicate whether each of the following is an IONIC or COVALENT compound</u>:</p>
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                            <form action="/covalentnamingtutorial/{{page}}" method="post">
+                                <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.75vw">
+                                    {% for item in range(4) %}
+                                    <li style="color:blue">
+                                        <label for "answer{{item}}"><span>
+                                            {% for char in practiceList[item][1] %}{% if char in digits %}<sub>{{char}}</sub>{% else %}{{char}}{% endif %}{% endfor %}
+                                            </span>= </label>
+                                        <input type="radio" name="answer{{item}}" value="ionic" required {% if answers[item] == 'ionic' %} checked {% endif %}> <span style="font-size: 1.5vw; color:black">Ionic</span>
+                                        <input type="radio" name="answer{{item}}" value="covalent" required {% if answers[item] == 'covalent' %} checked {% endif %}> <span style="font-size: 1.5vw; color:black">Covalent (molecular)</span>
+                                    </li>
+                                    {% if messages %}
+                                        {% set message = messages[item] %}                                        
+                                        <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                    {% endif %}
+                                        <hr>
+                                        <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                        <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="correctAns{{item}}" type="hidden" value="{{correctAns[item]}}">
+                                        <input name="page" type="hidden" value="{{page}}">
+                                        <input name="displayText" type="hidden" value="{{displayText}}">
+                                    {% endfor %}
+                                </ul>
+                                <div class="wrapper text-center">
+                                    {% if numCorrect != 4 %}
+                                        <a class="btn btn-info mb-3" href="/covalentnamingtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                        <input class="btn btn-success mb-3" type="submit" value="Check">
+                                    {% else %}
+                                        <a class="btn btn-info mb-3" href="/covalentnamingtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                        <a class="btn btn-danger mb-3" href="/covalentnamingtutorial/{{page+1}}" role="button">Next Page</a>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <h2 class="ml-1"><u>Steps</u>:</h2>
+            <div class="container-fluid border-0" style="font-size:1.75vw">
+                <div class="row justify-content-left wrapper text-center">
+                    <div class="col-5 border">
+                        <p style="color:green">Watch the video first, then try the practice problems.</p>
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <video controls src="{{url_for('static', filename='CovalentNaming.mov')}}"></video>
+                        </div>
+                    </div>
+                    <div class="col-7 border wrapper text-center">
+                        <p style="color:brown"><u>Provide the name for each of the following compounds</u>:</p>
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                            <form action="/covalentnamingtutorial/{{page}}" method="post">
+                                <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.75vw">
+                                    {% for item in range(4) %}
+                                    <li style="color:blue">
+                                        <label for "answer{{item}}"><span>
+                                            {% for char in practiceList[item][1] %}{% if char in digits %}<sub>{{char}}</sub>{% else %}{{char}}{% endif %}{% endfor %}
+                                            </span>= </label>
+                                        <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="20"></br>
+                                    </li>
+                                    {% if messages %}
+                                        {% set message = messages[item] %}                                        
+                                        {% if message[0] != 'error' %}
+                                            <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                        {% else %}
+                                            <div class="btn-group dropright">
+                                                <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14pt; color:red">
+                                                    <span class='{{message[0]}}'>{{message[1]}}</span>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <p class="dropdown-item" style="font-size: 20pt; color:red">{{practiceList[item][0]}}</p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                        <hr>
+                                        <input name="name{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                        <input name="formula{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="displayText" type="hidden" value="{{displayText}}">
+                                        <input name="page" type="hidden" value="{{page}}">
+                                    {% endfor %}
+                                </ul>
+                                {% if numCorrect != 4 %}
+                                    <a class="btn btn-info mb-3" href="/covalentnamingtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                    <input class="btn btn-success mb-3" type="submit" value="Check">
+                                {% else %}
+                                    <a class="btn btn-info mb-3" href="/covalentnamingtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                    {% if page == 1 %}
+                                        <a class="btn btn-success mb-3" href="/covalentnamingtutorial/{{page+1}}" role="button">Next Page</a>
+                                    {% else %}
+                                        <a class="btn btn-primary mb-3" href="/" role="button">Main Menu</a>
+                                    {% endif %}
+                                {% endif %}
+                            </form>
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="row justify-content-left wrapper text-center">
+                    <div class="col-5 border-0">
+                        <button class="btn-sm btn-outline-info mt-2" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Summary of Naming Steps
+                        </button>
+                        <div class="collapse" id="collapseOne">
+                            <div class="card card-body">
+                                <figure class="figure mb-0">
+                                    <img src="{{url_for('static', filename='NamingCovalent2.png')}}" class="figure-img img-fluid">
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7 border-0">
+                        <button class="btn-sm btn-outline-danger mt-2" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Prefix List
+                        </button>
+                        <div class="collapse" id="collapseTwo">
+                            <div class="card card-body">
+                                <figure class="figure mb-0">
+                                    <img src="{{url_for('static', filename='Prefixes.png')}}" class="figure-img img-fluid" style="width:35%; height:100%">
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}   

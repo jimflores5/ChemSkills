@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class='wrapper text-center'>
+        <h1><u>{{title}}</u></h1>
+        <br/>
+        {% if question == '0' %}
+            <h2>Provide the name for: <span style="color:blue">
+                {% for item in formula %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}
+                </span></h2><br/>
+            {% with messages = get_flashed_messages(with_categories=True) %} 
+            <form action="/allnaming" method="post">
+                <label for="answer" style="font-size:1.75vw; color:blue">Name: </label>
+                <input name="answer" type="text" value="{{answer}}" style="font-size:1.75vw" size = "28"><br/>
+                {% for category,message in messages %}
+                    {% if category != 'error' %}
+                        <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                    {% else %}
+                        <div class="btn-group dropright">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14pt; color:red">
+                                {{message}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <p class="dropdown-item" style="font-size: 24pt; color:red">{{name}}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <br/>
+                <input name="name" type="hidden" value="{{name}}">
+                <input name="formula" type="hidden" value="{{formula}}">
+                <input name="question" type="hidden" value="{{question}}">
+                <input name="firstAttempt" type="hidden" value="{{firstAttempt}}">
+            </form>
+            {% endwith %}
+        {% else %}
+            <h2>Provide the formula for: <span style="color:blue">{{name}}</span></h2></br>
+            {% with messages = get_flashed_messages(with_categories=True) %} 
+            <form action="/allnaming" method="post">
+                <div class="row justify-content-center" style="font-size:1.75vw">
+                    <div class="col-1 wrapper text-right no-gutters">
+                        <label for="answer" style="color:blue">Formula:</label>
+                    </div>
+                    <div class="col-2 wrapper text-center">
+                        <input onkeyup="display(this)" name="answer" type="text" value="{{answer}}" size = "12"></br>
+                    </div>
+                    <div class="col-1 wrapper text-left">
+                        {% if correct %}
+                            <label for="answer" style="color:brown" id="dynamicFormula">{% for item in formula %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}</label>
+                        {% else %}
+                            <label for="answer" style="color:brown" id="dynamicFormula"></label>
+                        {% endif %}
+                    </div>
+                </div>
+                {% for category,message in messages %}
+                    {% if category != 'error' %}
+                        <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                    {% else %}
+                        <div class="btn-group dropright">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14pt; color:red">
+                                {{message}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <p class="dropdown-item" style="font-size: 24pt; color:red">{% for item in formula %}{% if item in digits %}<sub>{{item}}</sub>{% else %}{{item}}{% endif %}{% endfor %}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <br/>
+                <input name="name" type="hidden" value="{{name}}">
+                <input name="formula" type="hidden" value="{{formula}}">
+                <input name="question" type="hidden" value="{{question}}">
+                <input name="firstAttempt" type="hidden" value="{{firstAttempt}}">
+                <script>
+                    function display(entry)
+                    {
+                        var k=entry.value;
+                        var result = '';
+                        digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                        for (char in k){
+                            if (k[char] in digits){
+                                result += k[char].sub();
+                            }
+                            else{
+                                result += k[char];
+                            }
+                        }
+                        document.getElementById("dynamicFormula").innerHTML = result;
+                    }
+                </script>
+            </form>
+            {% endwith %}
+        {% endif %}
+        <p style="font-size: 16pt; color:purple">(Hit 'Return' or 'Enter' to check your answer)</p>
+        <div>
+            <a class="btn btn-primary" href="allnaming" role="button">Next Question</a>   
+            <a class="btn btn-danger" href='/namingindex' role="button">Naming Menu</a>
+        </div>
+        <hr>
+        <div class="wrapper text-center">
+            <div class = "row">
+                <div class="col-4">
+                    Names = {{nameCorrect}}/{{nameAttempts}} = {% if nameAttempts == 0 %} ---% {% else %} {{((nameCorrect/nameAttempts)*100)|round(1)}}% {% endif %}
+                </div>
+                <div class="col-4">
+                    Overall = {{formCorrect+nameCorrect}}/{{formAttempts+nameAttempts}} = {{((formCorrect+nameCorrect)/(formAttempts+nameAttempts)*100)|round(1)}}%
+                    </div>
+                <div class="col-4">
+                    Formulas = {{formCorrect}}/{{formAttempts}} = {% if formAttempts == 0 %} ---% {% else %} {{((formCorrect/formAttempts)*100)|round(1)}}% {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="wrapper text-center">
+        <div class="row">
+            <div class="col-6">
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseIons" aria-expanded="false" aria-controls="collapseExample">
+                    Polyatomic Ion List
+                </button>
+                <div class="collapse" id="collapseIons">
+                    <div class="card card-body">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='IonList.png')}}" class="figure-img img-fluid" style="width:92%; height:100%">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapsePrefixes" aria-expanded="false" aria-controls="collapseExample">
+                    Prefix List
+                </button>
+                <div class="collapse" id="collapsePrefixes">
+                    <div class="card card-body">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='Prefixes.png')}}" class="figure-img img-fluid" style="width:75%; height:100%">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}    
