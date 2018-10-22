@@ -23,7 +23,7 @@
     </div>
     {% with messages = get_flashed_messages(with_categories=True) %}
         <form action="/namingquiz" method="post">
-            <div class="container-fluid wrapper text-center" style="font-size:1.3vw">
+            <div class="container-fluid wrapper text-center" style="font-size:1.5vw">
                 <div class="row justify-content-center">
                     <div class="col-6">
                         <ol class="wrapper text-left mt-3">
@@ -68,7 +68,7 @@
                         </ol>
                     </div>
                     <div class="col-6">
-                        <ol start="{{numQuestions//2+1}}" class="wrapper text-left mt-3" style="font-size: 1.3vw">
+                        <ol start="{{numQuestions//2+1}}" class="wrapper text-left mt-3" style="font-size: 1.5vw">
                             {% for item in range(numQuestions//2,numQuestions) %}
                                 <li style="color:purple">
                                     <div class="row">

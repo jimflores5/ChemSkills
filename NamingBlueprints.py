@@ -486,6 +486,3 @@ def ffmtutorial(type):
             practiceList.append(Compound)
 
     return render_template('ffmtutorial.html',title="Formulas from Names", page = page, practiceList = practiceList, digits = digits, answers = answers, numCorrect = numCorrect, correct = correct)
-
-if __name__ == '__main__':
-    app.run()

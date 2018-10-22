@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, render_template, session, flash
 import cgi
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
-import NamingPractice
+import NamingBlueprints
 from NamingBlueprints import naming_practice_blueprint
 
 app = Flask(__name__)
@@ -180,7 +180,7 @@ def namingquiz():
             else:
                 compoundType = 'molecular'
             while len(practiceList) != numQuestions:
-                Compound = NamingPractice.chooseCompound(compoundType)
+                Compound = NamingBlueprints.chooseCompound(compoundType)
                 if Compound not in practiceList:
                     practiceList.append(Compound)
             session['numQuestions'] = numQuestions
@@ -211,7 +211,7 @@ def namingquiz():
                         flash('X', 'error')
                         correct.append(False)
                 else:
-                    if NamingPractice.checkName(answers[item],practiceList[item][0]):
+                    if NamingBlueprints.checkName(answers[item],practiceList[item][0]):
                         flash(':-)', 'correct')
                         if listAttempt == 2:
                             numCorrect += 1
