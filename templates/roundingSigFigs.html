@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class='wrapper text-center'>
+        <h1><u>Round to the Requested Number of Significant Figures</u></h1>
+        {% if sigFigs == 1 %}
+            <h2>Round <span style="color:brown">{{value}}</span> to <span style="color:blue">{{sigFigs}} significant figure.</span></h2><br/>
+        {% else %}
+            <h2>Round <span style="color:brown">{{value}}</span> to <span style="color:blue">{{sigFigs}} significant figures.</span></h2><br/>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages(with_categories=True) %} 
+        <form action="/roundingsf" method="post">
+            <label for="answer" style="font-size: 16pt; color:blue">Answer: </label>
+            <input name="answer" type="text" value="{{answer}}" style="font-size: 16pt" size = "10"><br/>
+            {% for category,message in messages %}
+                {% if category != 'error' %}
+                    <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                {% else %}
+                    <div class="btn-group dropright">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14pt; color:red">
+                            {{message}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <p class="dropdown-item" style="font-size: 24pt; color:red">{{roundedValue}}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br/><br/>
+            <input name="value" type="hidden" value="{{value}}">
+            <input name="sigFigs" type="hidden" value="{{sigFigs}}">
+        </form>
+        {% endwith %}
+        <p style="font-size: 16pt; color:purple">(Hit 'Return' or 'Enter' to check your answer)</p>
+        <br/>
+        <a class="btn btn-primary" href="roundingsf" role="button">Next Practice Number</a>
+        <br/><br/>
+        <div>
+            <a class="btn btn-danger" href='/sigfigindex' role="button">Sig Figs Menu</a>
+        </div>
+    </div>
+{% endblock %}

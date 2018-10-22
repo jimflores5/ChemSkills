@@ -5,9 +5,12 @@ from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
 import NamingBlueprints
 from NamingBlueprints import naming_practice_blueprint
+from SigFigsBlueprints import sigfigs_blueprint
 
 app = Flask(__name__)
 app.register_blueprint(naming_practice_blueprint)
+app.register_blueprint(sigfigs_blueprint)
+
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ChemSkills:4LCProject3@localhost:8889/ChemSkills'
 app.config['SQLALCHEMY_ECHO'] = False

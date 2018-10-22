@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+        <div class="ml-3">
+            <a class="btn btn-primary" href="/" role="button">Home</a>
+        </div>
+        <div class = 'wrapper text-center'>
+            <h1 class="wrapper text-center"><u>Working with Significant Figures</u></h1>
+        </div>
+        <div class="mr-3">
+            <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row justifuy-content-center">
+            <div class="col">
+                <div class = 'wrapper text-center'>
+                    <h1 style="color:green"><u>Tutorials</u></h1>
+                    <h2 style="color:green">Select a topic:</h2>
+                    <div class=btn-group-vertical>
+                        <a class="btn btn-success" href="sftutorial1" role="button">Counting Significant Figures</a>
+                        <a href="/roundingtutorial1" class="btn btn-success" role="button">Rounding to Significant Figures</a>
+                        <a href="/scinottutorial1" class="btn btn-success" role="button">Scientific Notation</a>
+                        <a href="/sfcalcstutorial1" class="btn btn-success" role="button">Calculations with Significant Figures</a>
+                    </div>
+                </div>
+            </div>
+            <div class = 'col'>
+                <div class='wrapper text-center'>
+                    <h1 style="color:blue"><u>Practice</u></h1>
+                    <h2 style="color:blue">Select an option:</h2>
+                    <div class=btn-group-vertical>
+                        <a class="btn btn-primary" href="countingsf" role="button">Counting Significant Figures</a>
+                        <a href="roundingsf" class="btn btn-primary" role="button">Rounding to Significant Figures</a>
+                        <a href="scinotation" class="btn btn-primary" role="button">Scientific Notation with  Figures</a>
+                        <a href="sfcalcs" class="btn btn-primary" role="button">Calculations with Significant Figures</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}  
