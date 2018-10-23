@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if menu == 'True' %}
+        <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+            <div class="ml-3">
+                <a class="btn btn-primary" href="/" role="button">Home</a>
+            </div>
+            <div class = 'wrapper text-center'>
+                <h1 class="wrapper text-center"><u>Significant Figures and Scientific Notation</u></h1>
+            </div>
+            <div class="mr-3">
+                <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+            </div>
+        </div> 
+        <br/>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-10 wrapper text-center">
+                    <h2 style="color:blue"><u>Select a skill to assess</u>:</h2>
+                    <form action="/sfquiz" method="post" style="font-size: 1.5vw">
+                        <div class="row wrapper text-left justify-content-center">
+                            <div class="col-6">
+                                <input type="radio" name="choice" value="sigfigcounting" required>
+                                <label for="choice" style="color:green">Counting and Rounding with Significant Figures</label><br/>
+                                <input type="radio" name="choice" value="scinotation" required>
+                                <label for="choice" style="color:purple">Scientific Notation</label><br/>
+                                <input type="radio" name="choice" value="sigfigcalcs" required>
+                                <label for="choice" style="color:red">Calculations with Significant Figures</label><br/>
+                            </div>
+                            <div class="col-2">
+                                <label for="choice" style="color:green">(10 questions)</label><br/>
+                                <label for="choice" style="color:purple">(10 questions)</label><br/>
+                                <label for="choice" style="color:red">(10 questions)</label><br/>
+                            </div>
+                        </div>
+                        <div class="wrapper text-center">
+                            <input class="btn btn-success mb-2" type="submit" value="Go!">
+                            <input name="listAttempt" type="hidden" value="0">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+            <div class="ml-3">
+                <a class="btn btn-primary" href="/sfquiz" role="button">Quiz Menu</a>
+            </div>
+            <div class = 'wrapper text-center'>
+                <h1 class="wrapper text-center"><u>Skill Check - {{title}}</u></h1>
+            </div>
+            <div class="mr-3">
+                <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+            </div>
+        </div> 
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            <form action="/sfquiz" method="post">
+                <div class="container-fluid wrapper text-center" style="font-size:1.5vw">
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            <div class="wrapper text-left">
+                                {% if choice == 'sigfigcounting' %}
+                                    <h3 class="ml-2" style="color:brown"><u>{{instructions[0][0]}}</u>:</h3>
+                                {% elif choice == 'scinotation' %}
+                                    <h3 class="ml-2" style="color:brown"><u>{{instructions[1][0]}}</u>:</h3>
+                                {% else %}
+                                    <h3 class="ml-2" style="color:brown"><u>{{instructions[2][0]}}</u>:</h3>
+                                {% endif %}
+                            </div>
+                            <ol class="wrapper text-left mt-3">
+                                {% for item in range(numQuestions//2) %}
+                                    <li style="color:blue">
+                                        <div class="row">
+                                            <div {% if choice == 'scinotation' %} class="col-6 wrapper text-right" {% else %} class="col-4 wrapper text-right" {% endif %}>
+                                                {% if messages %}
+                                                    {% set message = messages[item] %}                                        
+                                                    <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                                {% endif %}
+                                                {% if choice == 'sigfigcounting' %}
+                                                    <label for="answer{{item}}"><span>{{practiceList[item]}}</span> =</label>
+                                                {% elif choice == 'scinotation' %}
+                                                    <label for="answer{{item}}"><span>{{practiceList[item][0]}}</span> =</label>
+                                                    <input name="answer" type="text" value="{{answer}}" size="3">
+                                                    <label for="exponent">x10</label>
+                                                    <sup style="vertical-align: 1.2em"><input name="exponent" type="text" value="{{exponent}}" size="1"></sup><br/>
+                                                {% else %}
+                                                    <label for="answer{{item}}"><span>{{practiceList[item]}}</span> =</label>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-4 wrapper text-center">
+                                                {% if choice == 'sigfigcounting' %}
+                                                    <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="3"><br/>
+                                                {% elif choice == 'sigfigcalcs' %}
+                                                    <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="15"><br/>
+                                                {% endif %}
+                                            </div> 
+                                        </div>
+                                    </li>
+                                    <br/>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                        <div class="col-6">
+                            <div class="wrapper text-left">
+                                {% if choice == 'sigfigcounting' %}
+                                    <h3 class="ml-2" style="color:brown"><u>{{instructions[0][1]}}</u>:</h3>
+                                {% elif choice == 'scinotation' %}
+                                    <h3 class="ml-2" style="color:brown"><u>{{instructions[1][1]}}</u>:</h3>
+                                {% else %}
+                                    <h3 class="ml-2" style="color:brown"><u>{{instructions[2][1]}}</u>:</h3>
+                                {% endif %}
+                            </div>
+                            <ol start="{{numQuestions//2+1}}" class="wrapper text-left mt-3" style="font-size: 1.5vw">
+                                {% for item in range(numQuestions//2,numQuestions) %}
+                                    <li style="color:green">
+                                        <div class="row">
+                                            <div class="col-4 wrapper text-right">
+                                                {% if messages %}
+                                                    {% set message = messages[item] %}                                        
+                                                    <span class='{{message[0]}}' style="font-size: 14pt">{{message[1]}}</span>
+                                                {% endif %}
+                                                {% if choice == 'sigfigcounting' %}
+                                                    <label for="answer{{item}}"><span>{{practiceList[item][0]}}</span> =</label>
+                                                {% elif choice == 'scinotation' %}
+                                                    <label for="answer">{{practiceList[item][1]}}x10<sup style="vertical-align: 0.5em">{{practiceList[item][3]}}</sup> =</label>
+                                                {% else %}
+                                                    <label for="answer{{item}}"><span>{{practiceList[item]}}</span> =</label>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-4 wrapper text-center">
+                                                <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="12"><br/>
+                                            </div> 
+                                            {% if choice == 'sigfigcounting' %}
+                                                <div class="col-2 wrapper text-left">
+                                                    <label for="answer{{item}}" style="color:purple">{{practiceList[item][2]}} {% if practiceList[item][2] != 1 %}sig figs{% else %}sig fig{% endif %}</label>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    <br/>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                        <input name="choice" type="hidden" value="{{choice}}">
+                        <input name="listAttempt" type="hidden" value="{{listAttempt}}">
+                        <input name="numCorrect" type="hidden" value="{{numCorrect}}">
+                    </div>
+                    {% if tally != 10 and listAttempt == 1 %}
+                        <input class="btn btn-success" type="submit" value="Submit">
+                    {% elif tally != 10 and listAttempt > 1 %}
+                        <input class="btn btn-success mr-3" type="submit" value="Check corrections">
+                        <a class="btn btn-primary" href="/updateprogress" role="button">Update progress</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="/updateprogress" role="button">Update progress</a>
+                    {% endif %}
+                    {% if listAttempt > 1 %}
+                        <div>
+                            <p style="color:red">You scored {{numCorrect}}/{{numQuestions}} = {{ratioCorrect}}% on your first try.</p>
+                            {% if tally != 10 %}
+                                <p style="color:brown">(Making corrections will help boost your skill).</p>
+                            {% endif %}
+                            </div>
+                    {% endif %}
+                </div>
+            </form>
+        {% endwith %}
+    {% endif %}
+{% endblock %}  

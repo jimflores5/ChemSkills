@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, render_template, session, flash
 import cgi
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
-import NamingBlueprints
+import NamingBlueprints, SigFigsBlueprints
 from NamingBlueprints import naming_practice_blueprint
 from SigFigsBlueprints import sigfigs_blueprint
 
@@ -233,6 +233,77 @@ def namingquiz():
             return render_template('namingquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, tally=tally, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, ratioCorrect = ratioCorrect, digits = digits)
     
     return redirect('/namingquizmenu')
+
+@app.route('/sfquiz', methods=['POST', 'GET'])
+def sfquiz():
+    if request.method == 'POST':
+        choice = request.form['choice']
+        if choice == 'sigfigcounting':
+            title = "Counting & Rounding with Sig Figs"
+        elif choice == 'scinotation':
+            title = "Scientific Notation"
+        else:
+            title = "Math with Sig Figs"
+        session['choice'] = choice
+        instructions = [('Identify the number of sig figs in each of the following','Round each of the followng to the specified number of sig figs'),
+        ('Convert to scientific notation','Convert to standard notation'),
+        ('Round the answers to the correct number of sig figs','Round the answers to the correct number of sig figs')]
+        listAttempt = int(session.get('listAttempt',None)) + 1
+        if listAttempt == 1:  #establish initial list of values and present to user
+            practiceList = []
+            answers = []
+            correct = []
+            session['numCorrect'] = 0
+            numQuestions = 10
+            if choice == 'sigfigcounting':
+                while len(practiceList) < 10:
+                    if len(practiceList) < 5:
+                        sigFigs = random.randrange(1,7)
+                        power = random.randrange(-5,9)
+                        value = SigFigsBlueprints.MakeNumber(sigFigs,power)
+                        practiceList.append(value)
+                    else:
+                        iffyValue = True
+                        while iffyValue:
+                            sigFigs = random.randrange(1,7)
+                            power = random.randrange(-4,6)
+                            origValue = SigFigsBlueprints.MakeNumber(9,power)
+                            correctAnswer = SigFigsBlueprints.RoundValue(origValue, sigFigs)
+                            iffyValue = SigFigsBlueprints.CheckRounding(correctAnswer,sigFigs)
+                            value = (origValue,correctAnswer,sigFigs)
+                        practiceList.append(value)
+            elif choice == 'scinotation':
+                practiceList = []
+                answers = []
+                correct = []
+                numCorrect = 0
+                while len(practiceList) < numQuestions:
+                    sigFigs = random.randrange(1,5)
+                    power = random.randrange(-5,7)
+                    standard = SigFigsBlueprints.MakeNumber(sigFigs,power)
+                    sciNot = SigFigsBlueprints.ApplySciNotation(standard, sigFigs)
+                    value = (standard,sciNot,sigFigs,power)
+                    practiceList.append(value)
+            else:
+                while len(practiceList) < numQuestions:
+                    if len(practiceList) < 5:
+                        practiceList.append('+/- example')
+                    else:
+                        practiceList.append('Mult/div example')
+                
+            session['numQuestions'] = numQuestions
+            session['listAttempt'] = listAttempt
+            return render_template('sfquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions)
+        else:
+            #answer checking here
+            return render_template('sfquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = numCorrect, tally=tally, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, ratioCorrect = ratioCorrect, digits = digits)
+        
+        return render_template('sfquiz.html', title=title, menu = False, instructions = instructions)
+
+    menu = 'True'
+    listAttempt = 0
+    session['listAttempt'] = listAttempt
+    return render_template('sfquiz.html', title='Sig Fig Assessment', menu = menu, listAttempt = listAttempt)
 
 @app.route('/updateprogress', methods=['POST', 'GET'])
 def updateprogress():

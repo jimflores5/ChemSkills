@@ -153,7 +153,7 @@
                                         <label for="decimal{{item}}">{{values[item]}} = </label>
                                         <input name="decimal{{item}}" type="text" value="{{decimals[item]}}" size="3">
                                         <label for="exponent{{item}}">x10</label>
-                                        <sup style="vertical-align: 1em"><input name="exponent{{item}}" type="text" value="{{exponents[item]}}" size="1"></sup></br>
+                                        <sup style="vertical-align: 1em"><input name="exponent{{item}}" type="text" value="{{exponents[item]}}" size="1"></sup><br/>
                                     </li>
                                     {% if messages %}
                                         {% set message = messages[item] %}
