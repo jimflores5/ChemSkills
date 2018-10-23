@@ -24,6 +24,9 @@ class Students(db.Model):
     school_email = db.Column(db.String(60), primary_key=True)
     teacher_email = db.Column(db.String(60))
     password = db.Column(db.String(20))
+    sigfigcounting = db.Column(db.Integer)
+    sigfigcalcs = db.Column(db.Integer)
+    scinotation = db.Column(db.Integer)
     nameionic = db.Column(db.Integer)
     namecovalent = db.Column(db.Integer)
     ffnI = db.Column(db.Integer)
@@ -69,12 +72,12 @@ teacher_info = [("Name",'name','text',''), ("School e-mail",'school_email','emai
 #Tuple order = (Input box label, input box name, input box type, placeholder entry)
 
 digits = ['0','1','2','3','4','5','6','7','8','9']
-quiz_labels = {'nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practice All Naming'}
+quiz_labels = {'sigfigcounting':'Counting Sig Figs','sigfigcalcs':'Math with Sig Figs','scinotation':'Scientific Notation','nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practice All Naming'}
 #Dictionary key,value = Quiz menu label : Full skill name
 
-student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','Nameionic','Namecovalent','FFNI','FFNC', 'AllNaming']
-student_display_data = ['nameionic','namecovalent','ffnI','ffnC','allnaming']  #Database field names.
-student_display_headings = ['Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)','Practice All Naming']  #Column names to display on User Info page.
+student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','SigFigCounting','SigFigCalcs','SciNotation','Nameionic','Namecovalent','FFNI','FFNC', 'AllNaming']
+student_display_data = ['sigfigcounting','sigfigcalcs','scinotation','nameionic','namecovalent','ffnI','ffnC','allnaming']  #Database field names.
+student_display_headings = ['Counting Sig Figs','Math with Sig Figs','Scientific Notation','Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)','Practice All Naming']  #Column names to display on User Info page.
 
 def extractData(row):
     all_info = {}
@@ -340,7 +343,6 @@ def logout():
 @app.route('/userinfo', methods=['POST', 'GET'])
 def userinfo():
     if request.method == 'POST':
-
         return render_template('userinfo.html')
 
     email = session.get('email',None)

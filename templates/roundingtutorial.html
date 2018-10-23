@@ -1,0 +1,461 @@
+{% extends "roundingbase.html" %}
+
+{% block content %}
+    {% if page == 1 %}
+        <div class="container-fluid card border-0">
+            <div class="wrapper text-center card-header" id="headingOne">
+                <button class="btn btn-light btn-block collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h2 style="color:brown"><u>Ground Rules (Click to reveal)</u>:</h2>
+                </button>
+            </div>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body row justify-content-center wrapper text-center">
+                    <div class="col-3 border">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='NoFractions.png')}}" class="figure-img img-fluid" style="width:50%; height:50%">
+                        </figure>
+                    </div>
+                    <div class="col-3 border">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='NoRepeatBars.png')}}" class="figure-img img-fluid" style="width:60%; height:60%">
+                        </figure>
+                    </div>
+                    <div class="col-3 border">
+                        <p style="font-size:2vw">All measurements and calculated results MUST be expressed in decimal form with a LIMITED number of sig figs.</p>
+                    </div>
+                </div>
+            </div> 
+        </div><br/>
+        <div class="container-fluid card border-0">
+            <div class="wrapper text-center card-header" id="headingTwo">
+                <button class="btn btn-light btn-block collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <h2 style="color:green"><u>Why?</u></h2>
+                </button>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body row justify-content-center wrapper text-center">
+                    <div class="col-3 border">
+                        <div class="embed-responsive embed-responsive-4by3">
+                            <video controls src="{{url_for('static', filename='WhyNoFractions.mov')}}"></video>
+                        </div>
+                    </div>
+                    <div class="col-3 border">
+                        <p style="font-size:2vw">There IS a difference...</p>
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='ThereIsADifference.png')}}" class="figure-img img-fluid">
+                        </figure>
+                    </div>
+                    <div class="col-4 border">
+                        <p style="font-size:2vw; color:blue;">Fractions do not provide information about the tool used or about which digit is the "guess".</p>
+                        <p style="font-size:2vw; color:brown;">NO FRACTIONS!!!!!  (They do not show sig figs).</p>
+                    </div>
+                </div><br/>
+                <div class="row justify-content-center wrapper text-center">
+                    <div class="col-3 border">
+                        <div class="embed-responsive embed-responsive-4by3">
+                            <video controls src="{{url_for('static', filename='NoRepeatBars.mov')}}"></video>
+                        </div>
+                    </div>
+                    <div class="col-3 border">
+                        <p style="font-size:2vw"><u>You get ONE guess digit</u></p>
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='NoRepeatBarsImage.png')}}" class="figure-img img-fluid">
+                        </figure>
+                    </div>
+                    <div class="col-4 border">
+                        <p style="font-size:2vw; color:blue;">Repeat bars ignore errors in the data.  They imply 'perfect' numbers, which is impossible with measured values.</p>
+                        <p style="font-size:2vw; color:brown;">NO REPEAT BARS!!!!!  (We cannot predict past the guess digit).</p>
+                    </div>
+                </div>
+            </div>
+        </div><br/><br/>
+    {% elif page == 2 %}
+        <h2 class = 'wrapper text-left ml-2' style="color:blue"><u>Level 1 Examples</u>:</h2>
+        <ul style="font-size:1.75vw" class="ml-2">
+            <li>Remember, we get only ONE guess digit.  Let's practice how to round results to a smaller number of sig figs.</li><hr>
+            <li>
+                {% if displayText < 4 %}
+                    <span style="color:green"><u>Example #1</u> - </span>Watch the video clip, then follow the steps to round 12.38649 g to 5 sig figs.
+                {% else %}
+                    <span style="color:green"><u>Example #1</u> - Good, now consider further rounding.  Click 'Check' to confirm your thinking.</span>
+                {% endif %}
+                {% if displayText < 4 %}
+                    <div class="container-fluid">
+                        <div class="row justify-content-center wrapper text-center">
+                            <div class="col-4 border embed-responsive embed-responsive-4by3">
+                                <video controls src="{{url_for('static', filename='Level1Rounding.mov')}}"></video>
+                            </div>
+                            <div class="col-4 border wrapper text-left" style="color:green">
+                                <u>Steps:</u>
+                                <ol>
+                                    {% if displayText >= 1 %}
+                                        <li style="color:blue">Identify the first 5 sig figs in the value.</li>
+                                    {% endif %}
+                                    {% if displayText >= 2 %}
+                                        <li style="color:red">Look at the next digit in the number, and decide if it causes the "6" to round up or stay the same.</li>
+                                    {% endif %}
+                                    {% if displayText >= 3 %}
+                                        <li>Round the value and cut off the extra digits. (Enter your answer in the box.)</li>
+                                    {% endif %}
+                                </ol>
+                            </div>
+                            <div class="col-3 border" style="color:purple">
+                                {% with messages = get_flashed_messages(with_categories=True) %} 
+                                <form action="/roundingtutorial/{{page}}" method="post">
+                                    {% if displayText == 1 %}
+                                        <div>
+                                            12.38649 g
+                                        </div>
+                                    {% elif displayText == 2 %}
+                                        <div>
+                                            <span style="color:blue">12.386</span><u style="color:red">4</u>9 g
+                                        </div>
+                                    {% elif displayText == 3 %}
+                                        <span style="color:blue">12.386</span><u style="color:red">4</u>9 g
+                                        <div class="form-inline form-group">
+                                            <input class="form-control ml-5" name = "5SigFigs" id="5SigFigs" value="{{roundedAnswer}}"> g
+                                            {% for category,message in messages %}
+                                                <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        {% if displayText < 3 %}
+                                            <input class="btn btn-success btn-sm mb-2" type="submit" value="Next...">
+                                            <input name="displayText" type="hidden" value="{{displayText}}">
+                                            <input name="5SigFigs" type="hidden" value="{{roundedAnswer}}">
+                                        {% elif displayText==3 %}
+                                            <input class="btn-sm btn-danger" type="submit" value="Check">
+                                            <input name="displayText" type="hidden" value="{{displayText}}">
+                                        {% endif %}
+                                    </div>
+                                </form>
+                                {% endwith %}
+                            </div>
+                        </div> 
+                    </div>
+                {% endif %}
+                <br/>
+                {% if displayText >= 4 %}
+                    <div class="container wrapper text-center">
+                        <table class="table table-bordered text-center" style="font-size:1.5vw">
+                            <thead>
+                                <tr>
+                                <th scope="col">Original Value</th>
+                                <th scope="col">5 sig figs</th>
+                                <th scope="col">4 sig figs</th>
+                                <th scope="col">3 sig figs</th>
+                                <th scope="col">2 sig figs</th>
+                                </tr>
+                            </thead>
+                            {% if displayText==4 %}
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">12.38649 g</th>
+                                        <td style="color:blue">12.386 g</td>
+                                        <td>---- g</td>
+                                        <td>--- g</td>
+                                        <td>-- g</td>
+                                    </tr>
+                                </tbody>
+                            {% else %}
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">12.38649 g</th>
+                                        <td style="color:blue">12.386 g</td>
+                                        <td style="color:green">12.39 g</td>
+                                        <td style="color:purple">12.4 g</td>
+                                        <td style="color:red">12 g</td>
+                                    </tr>
+                                </tbody>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="wrapper text-center">
+                        <form action="/roundingtutorial/{{page}}" method="post">
+                            {% if displayText == 4 %}
+                                <input class="btn btn-success btn-sm mb-2" type="submit" value="Check">
+                                <input name="displayText" type="hidden" value="{{displayText}}">
+                                <input name="5SigFigs" type="hidden" value="">
+                            {% endif %}
+                        </form>
+                    </div>
+                {% endif %}
+            </li><hr>
+            {% if displayText >= 5 %}
+                <li>
+                    <span style="color:purple"><u>Example #2</u> - </span>Round 0.0079781 g to the requested number of sig figs.
+                    <div class="container-fluid wrapper text-center">
+                        {% with messages = get_flashed_messages(with_categories=True) %} 
+                            <form action="/roundingtutorial/{{page}}" method="post" class = "form-inline">
+                                <table class="table table-bordered text-center" style="font-size:1.5vw">
+                                    <thead>
+                                        <tr>
+                                        <th scope="col">Original Value</th>
+                                        <th scope="col">3 sig figs</th>
+                                        <th scope="col">2 sig figs</th>
+                                        <th scope="col">1 sig fig</th>
+                                        <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <div class="form-group">
+                                                <th scope="row">0.0079781 g</th>
+                                                    <td><input class="form-control" name = "3SigFigs" id="3SigFigs" value="{{answers[0]}}" style="width:125px; font-size:16pt"> g</td>
+                                                    <td><input class="form-control" name = "2SigFigs" id="2SigFigs" value="{{answers[1]}}" style="width:125px; font-size:16pt"> g</td>
+                                                    <td><input class="form-control" name = "1SigFigs" id="1SigFigs" value="{{answers[2]}}" style="width:125px; font-size:16pt"> g</td>
+                                                    {% if numCorrect < 3 %}
+                                                        <td><input class="btn btn-success" type="submit" value="Check..."></td>
+                                                    {% else %}
+                                                        <td><a class="btn btn-secondary mr-2" href="/roundingtutorial/{{page+1}}" role="button">Next &raquo;</a></td>
+                                                    {% endif %}
+                                                    <input name="displayText" type="hidden" value="{{displayText}}">
+                                                    <input name="5SigFigs" type="hidden" value="">
+                                            </div>
+                                        </tr>
+                                        <tr>
+                                            <div>
+                                                <th scope="row"></th>
+                                                {% for category,message in messages %}
+                                                    <td>
+                                                        <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                                                    </td>
+                                                {% endfor %}
+                                            </div>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        {% endwith %}
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    {% elif page == 3 %}
+        <h2 class = 'wrapper text-left ml-2' style="color:brown"><u>Level 2 Examples</u>:</h2>
+        <ul style="font-size:1.75vw" class="ml-2">
+            <li>Since zeros may or may not be significant, we need to know how to deal with them after rounding.</li><hr>
+            <li>
+                {% if displayText < 2 %}
+                    <span style="color:green"><u>Example #3</u> - </span>Check the video, then follow the steps to round 2376.14 mL to 3 sig figs.
+                {% else %}
+                    <span style="color:green"><u>Example #3</u> - Good, now consider further rounding.  Click 'Check' to confirm your thinking.</span>
+                {% endif %}
+                {% if displayText < 2 %}
+                    <div class="container-fluid">
+                        <div class="row justify-content-center wrapper text-center">
+                            <div class="col-4 border embed-responsive embed-responsive-16by9">
+                                <video controls src="{{url_for('static', filename='Level2Rounding.mov')}}"></video>
+                            </div>
+                            <div class="col-4 border wrapper text-left" style="font-size:1.75vw">
+                                <u style="color:green">Steps:</u>
+                                <ol>
+                                    <li style="color:blue">Identify the first 3 sig figs in the value.</li>
+                                    <li style="color:red">Look at the next digit in the number to determine if we round up or down.</li>
+                                    <li>Round and decide how many zeros must be added. (Enter your answer in the box.)</li>
+                                </ol>
+                            </div>
+                            <div class="col-3 border" style="color:purple">
+                                {% with messages = get_flashed_messages(with_categories=True) %} 
+                                2376.14 mL
+                                <form action="/roundingtutorial/{{page}}" method="post">
+                                    <div class="form-inline form-group">
+                                        <input class="form-control ml-5" style="width:200px" name = "example3" id="example3" value="{{example3}}"> mL
+                                        {% for category,message in messages %}
+                                            <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                                        {% endfor %}
+                                        <input name="displayText" type="hidden" value="{{displayText}}">
+                                    </div>
+                                    <input class="btn btn-success btn-sm" type="submit" value="Check...">
+                                </form>
+                                {% endwith %}
+                            </div>
+                        </div> 
+                    </div>
+                {% endif %}
+                <br/>
+                {% if displayText >= 2 %}
+                    <div class="container wrapper text-center">
+                        <table class="table table-bordered text-center" style="font-size:1.5vw">
+                            <thead>
+                                <tr>
+                                <th scope="col">Original Value</th>
+                                <th scope="col">3 sig figs</th>
+                                <th scope="col">2 sig figs</th>
+                                <th scope="col">1 sig fig</th>
+                                </tr>
+                            </thead>
+                            {% if displayText == 2 %}
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">2376.14 mL</th>
+                                        <td style="color:blue">2380 mL</td>
+                                        <td>-- mL</td>
+                                        <td>- mL</td>
+                                    </tr>
+                                </tbody>
+                            {% else %}
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">2376.14 mL</th>
+                                        <td style="color:blue">2380 mL</td>
+                                        <td style="color:green">2400 mL</td>
+                                        <td style="color:purple">2000 mL</td>
+                                    </tr>
+                                </tbody>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="wrapper text-center">
+                        <form action="/roundingtutorial/{{page}}" method="post">
+                            {% if displayText == 2 %}
+                                <input class="btn btn-success btn-sm mb-2" type="submit" value="Check">
+                                <input name="displayText" type="hidden" value="{{displayText}}">
+                                <input name="example3" type="hidden" value="">
+                            {% endif %}
+                        </form>
+                    </div>
+                {% endif %}
+            </li><hr>
+            {% if displayText >= 3 %}
+                <li>
+                    <span style="color:purple"><u>Example #4</u> - </span>Round 0.09983 g to the requested number of sig figs.
+                    <div class="container-fluid wrapper text-center">
+                        {% with messages = get_flashed_messages(with_categories=True) %} 
+                            <form action="/roundingtutorial/{{page}}" method="post" class = "form-inline">
+                                <table class="table table-bordered text-center" style="font-size:1.5vw">
+                                    <thead>
+                                        <tr>
+                                        <th scope="col">Original Value</th>
+                                        <th scope="col">3 sig figs</th>
+                                        <th scope="col">2 sig figs</th>
+                                        <th scope="col">1 sig fig</th>
+                                        <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <div class="form-group">
+                                                <th scope="row">0.09983 g</th>
+                                                <td><input class="form-control" name = "3SigFigs" id="3SigFigs" value="{{answers[0]}}" style="width:125px; font-size:16pt"> g</td>
+                                                <td><input class="form-control" name = "2SigFigs" id="2SigFigs" value="{{answers[1]}}" style="width:125px; font-size:16pt"> g</td>
+                                                <td><input class="form-control" name = "1SigFigs" id="1SigFigs" value="{{answers[2]}}" style="width:125px; font-size:16pt"> g</td>
+                                                    {% if numCorrect < 3 %}
+                                                        <td><input class="btn btn-success" type="submit" value="Check..."></td>
+                                                    {% else %}
+                                                        <td><a class="btn btn-secondary mr-2" href="/roundingtutorial/{{page+1}}" role="button">Next &raquo;</a></td>
+                                                    {% endif %}
+                                                    <input name="displayText" type="hidden" value="{{displayText}}">
+                                                    <input name="example3" type="hidden" value="">
+                                            </div>
+                                        </tr>
+                                        <tr>
+                                            <div>
+                                                <th scope="row"></th>
+                                                {% for category,message in messages %}
+                                                    <td>
+                                                        <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                                                    </td>
+                                                {% endfor %}
+                                            </div>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        {% endwith %}
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    {% else %}
+        <h2 class = 'ml-3'><u>Common Mistakes</u>:</h2>
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h3 class="mb-0" style="color:green">
+                        A) "Overrounding"
+                        <button style="font-size:16pt" class="btn btn-outline-success collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            How to avoid this...
+                        </button>
+                    </h3>
+                </div>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="container-fluid">
+                            <div class="row wrapper text-center">
+                                <div class="col-4 border embed-responsive embed-responsive-16by9">
+                                    <video controls src="{{url_for('static', filename='Overrounding.mov')}}"></video>
+                                </div>
+                                <div class="col-6">
+                                    <figure class="figure">
+                                        <img src="{{url_for('static', filename='OverroundingImage.png')}}" class="figure-img img-fluid" style="width:90%; height:90%">
+                                    </figure>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h3 class="mb-0" style="color:blue">
+                            B) Counting preceeding zeros
+                        <button style="font-size:16pt" class="btn btn-outline-primary collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Explore...
+                        </button>
+                    </h3>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="container-fluid">
+                            <div class="row wrapper text-center">
+                                <div class="col-4 border-right embed-responsive embed-responsive-16by9">
+                                    <video controls src="{{url_for('static', filename='Preceding0s.mov')}}"></video>
+                                </div>
+                                <div class="col-6 wrapper text-center align-self-center">
+                                    <figure class="figure">
+                                        <img src="{{url_for('static', filename='Preceding0s.png')}}" class="figure-img img-fluid">
+                                    </figure>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h3 class="mb-0" style="color:red">
+                            C) The ".0" effect
+                        <button style="font-size:16pt" class="btn btn-outline-danger collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Explore...
+                        </button>
+                    </h3>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="container-fluid">
+                            <div class="row wrapper text-center">
+                                <div class="col-4 border-right embed-responsive embed-responsive-16by9">
+                                    <video controls src="{{url_for('static', filename='PointZero.mov')}}"></video>
+                                </div>
+                                <div class="col-6">
+                                    <figure class="figure">
+                                        <img src="{{url_for('static', filename='PointZeroImage.png')}}" class="figure-img img-fluid" style="width:90%; height:90%">
+                                    </figure>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="wrapper text-left ml-3">
+            <h3 style="color:brown">
+                <u>Now take the next step</u>:
+                <a class="btn btn-success ml-2" href="/roundingsf" role="button">Practice Rounding to Sig Figs</a>
+            </h3>
+        </div>
+    {% endif %}
+{% endblock %}

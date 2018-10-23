@@ -1,0 +1,243 @@
+{% extends "scinottutorialbase.html" %}
+
+{% block content %}
+    {% if page == 1 %}
+        <ul style="font-size:2vw" class="ml-2">
+            <li>Scientific notation allows us to easily represent very large or very small values.</li>
+            <li style="color:blue">You have used scientific notation in previous classes.</li>
+            {% if displayText == 1 %}
+                <li style="color:green"><u>Try the following example to refresh your memory</u>: (Keep 2 sig figs)</li>
+            {% elif displayText == 2 %}
+                <hr>
+                <li style="color:purple">{{decimal}} x 10<sup style="vertical-align: 0.5em">{{exponent}}</sup> is CORRECT, but it is actually one of several 'right' answers:</li>
+            {% else %}
+                <hr>
+                <li style="color:red">The expression 10<sup style="vertical-align: 0.5em">x</sup> tells us to multiply 10 by itself 'x' times.  So:</li>
+            {% endif %}
+        </ul>
+        {% if displayText == 1 %}
+            <div class="container-fluid wrapper text-center">
+                {% with messages = get_flashed_messages(with_categories=True) %} 
+                    <form action="/scinottutorial/{{page}}" method="post">
+                        <label for="decimal" style="font-size: 2.5vw">1500= </label>
+                        <input name="decimal" type="text" style="font-size: 2.5vw" value="{{decimal}}" size="3">
+                        <label for="exponent" style="font-size: 2.5vw">x10</label>
+                        <sup style="vertical-align: 1em"><input name="exponent" type="text" style="font-size: 2vw" value="{{exponent}}" size="1"></sup></br>
+                        {% for category,message in messages %}
+                            <span class='{{category}}' style="font-size: 14pt">{{message}}</span>
+                        {% endfor %}
+                        <br/>
+                        <input class="btn btn-success" type="submit" value="Check Answer">
+                        <input name="displayText" type="hidden" value="{{displayText}}">
+                    </form>
+                {% endwith %}
+            </div>
+            <hr>
+        {% else %}
+            <div class="container-fluid">
+                <div class="row justify-content-between ml-5" style="font-size:2vw">
+                    <div class="col-3" style="color:blue">
+                        1.5 x 10<sup style="vertical-align: 0.5em">3</sup>
+                    </div>
+                    <div class="col-3" style="color:green">
+                        15 x 10<sup style="vertical-align: 0.5em">2</sup>
+                    </div>
+                    <div class="col-3" style="color:red">
+                        150 x 10<sup style="vertical-align: 0.5em">1</sup>
+                    </div>
+                    <div class="col-3">
+                        1500 x 10<sup style="vertical-align: 0.5em">0</sup>
+                    </div>
+                    {% if displayText == 2 %}
+                        <div class="container">
+                            <form action="/scinottutorial/{{page}}" method="post">
+                                <input class="btn btn-info" type="submit" value="Explore why...">
+                                <input name="displayText" type="hidden" value="{{displayText}}">
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if displayText > 2 %}
+                    <div class="row justify-content-between ml-5" style="font-size:2vw">
+                        <div class="col-3" style="color:blue">
+                            1.5 x (10x10x10)
+                        </div>
+                        <div class="col-3" style="color:green">
+                            15 x (10x10)
+                        </div>
+                        <div class="col-3" style="color:red">
+                            150 x (10)
+                        </div>
+                        <div class="col-3">
+                            1500 x (1)
+                        </div>
+                    </div>
+                    <div class="row justify-content-between ml-5" style="font-size:2vw">
+                        <div class="col-3" style="color:blue">
+                            1.5 x (1000)
+                        </div>
+                        <div class="col-3" style="color:green">
+                            15 x (100)
+                        </div>
+                        <div class="col-3" style="color:red"></div>
+                        <div class="col-3"></div>
+                    </div>
+                    <div class="row justify-content-between ml-5" style="font-size:2vw">
+                        <div class="col-3" style="color:blue">
+                            1500
+                        </div>
+                        <div class="col-3" style="color:green">
+                            1500
+                        </div>
+                        <div class="col-3" style="color:red">
+                            1500
+                        </div>
+                        <div class="col-3">
+                            1500
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% if displayText > 2 %}
+                <ul style="font-size:2vw" class="ml-2">
+                    <li>Each example above correctly represents '1500' by multiplying a number and a power of 10.</li>
+                    {% if displayText > 3 %}
+                        <li style="color:brown">To avoid unnessary complications, in this course we will ALL follow the same convention.</li>
+                    {% endif %}
+                    {% if displayText > 4 %}
+                        <hr>
+                        <li style="color:blue"><u>Convention</u> - When using scientific notation, write ONE AND ONLY ONE non-zero digit in front of the decimal.</li>
+                        <div class="row justify-content-between mt-2" style="font-size:2.5vw">
+                            <div class="container col-4">
+                                203000 = <mark class="alert-sm alert-primary">2</mark>.03 x 10<sup style="vertical-align: 0.5em">5</sup>
+                            </div>
+                            <div class="container col-4">
+                                0.0036 = <mark class="alert-sm alert-primary">3</mark>.6 x 10<sup style="vertical-align: 0.5em">-3</sup>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if displayText <= 4 %}
+                        <li>
+                            <form action="/scinottutorial/{{page}}" method="post">
+                                <input class="btn btn-info" type="submit" value="Continue">
+                                <input name="displayText" type="hidden" value="{{displayText}}">
+                            </form>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        {% endif %}
+    {% elif page == 2 %}
+        <div class="container-fluid border-0" style="font-size:2vw">
+            <div class="row justify-content-center wrapper text-center">
+                <div class="col-4 border">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <video controls src="{{url_for('static', filename='SciNot1.mov')}}"></video>
+                    </div>
+                    <hr>
+                    <div class="border embed-responsive embed-responsive-16by9">
+                        <video controls src="{{url_for('static', filename='SciNot2.mov')}}"></video>
+                    </div>
+                </div>
+                <div class="col-2 align-self-center">
+                    <figure class="figure">
+                        <img src="{{url_for('static', filename='TryIt1.png')}}" class="figure-img img-fluid">
+                    </figure>
+                </div>
+                <div class="col-4 border wrapper text-center align-self-center">
+                    {% with messages = get_flashed_messages(with_categories=True) %} 
+                        <form action="/scinottutorial/{{page}}" method="post">
+                            <ul type="none" class="wrapper text-left mt-3 pl-1" style="font-size: 1.75vw">
+                                {% for item in range(4) %}
+                                    <li>
+                                        <label for="decimal{{item}}">{{values[item]}} = </label>
+                                        <input name="decimal{{item}}" type="text" value="{{decimals[item]}}" size="3">
+                                        <label for="exponent{{item}}">x10</label>
+                                        <sup style="vertical-align: 1em"><input name="exponent{{item}}" type="text" value="{{exponents[item]}}" size="1"></sup></br>
+                                    </li>
+                                    {% if messages %}
+                                        {% set message = messages[item] %}
+                                        <span class='{{message[0]}}'>{{message[1]}}</span>
+                                    {% endif %}
+                                    <hr>
+                                    <input name="value{{item}}" type="hidden" value="{{values[item]}}">
+                                    <input name="power{{item}}" type="hidden" value="{{powers[item]}}">
+                                    <input name="sciValue{{item}}" type="hidden" value="{{sciValues[item]}}">
+                                {% endfor %}
+                            </ul>
+                            {% if numCorrect != 4 %}
+                                <a class="btn btn-danger mr-2 mb-3" href="/scinottutorial/{{page}}" role="button">Refresh</a>
+                                <input class="btn btn-success mb-3" type="submit" value="Check">
+                            {% else %}
+                                <a class="btn btn-danger mr-2 mb-3" href="/scinottutorial/{{page}}" role="button">Refresh</a>
+                                <a class="btn btn-secondary mr-2 mb-3" href="/scinottutorial/{{page+1}}" role="button">Next &raquo;</a>
+                            {% endif %}
+                        </form>
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    {% elif page == 3 %}
+        <div class="container-fluid border-0" style="font-size:2vw">
+            <div class="row justify-content-center wrapper text-center">
+                <div class="col-4 align-self-center">
+                    <div class="border embed-responsive embed-responsive-16by9">
+                        <video controls src="{{url_for('static', filename='SciNot3.mov')}}"></video>
+                    </div>
+                </div>
+                <div class="col-2 align-self-center">
+                    <figure class="figure">
+                        <img src="{{url_for('static', filename='TryIt1.png')}}" class="figure-img img-fluid">
+                    </figure>
+                </div>
+                <div class="col-4 border wrapper text-center">
+                    {% with messages = get_flashed_messages(with_categories=True) %}
+                        <form action="/scinottutorial/{{page}}" method="post">
+                            <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.75vw">
+                                {% for item in range(4) %}
+                                <li>
+                                    <label for="answer{{item}}">{{sciValues[item]}}x10<sup style="vertical-align: 0.5em">{{powers[item]}}</sup>= </label>
+                                    <input name="answer{{item}}" type="text" value="{{answers[item]}}" size="9"><br/>
+                                </li>
+                                {% if messages %}
+                                    {% set message = messages[item] %}
+                                    <span class='{{message[0]}}'>{{message[1]}}</span>
+                                {% endif %}
+                                <hr>
+                                <input name="value{{item}}" type="hidden" value="{{values[item]}}">
+                                <input name="power{{item}}" type="hidden" value="{{powers[item]}}">
+                                <input name="sciValue{{item}}" type="hidden" value="{{sciValues[item]}}">
+                                {% endfor %}
+                            </ul>
+                            {% if numCorrect != 4 %}
+                                <a class="btn btn-danger mr-2 mb-3" href="/scinottutorial/{{page}}" role="button">Refresh</a>
+                                <input class="btn btn-success mb-3" type="submit" value="Check">
+                            {% else %}
+                                <a class="btn btn-danger mr-2 mb-3" href="/scinottutorial/{{page}}" role="button">New Practice Numbers</a>
+                                <a class="btn btn-success mr-2 mb-3" href="/scinottutorial/{{page+1}}" role="button">Wrap-Up</a>
+                            {% endif %}
+                        </form>
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="container-fluid border-0 wrapper text-center" style="font-size:2vw">
+            <div class="row justify-content-center wrapper text-center">
+                <div class="col-7">
+                    <figure class="figure">
+                        <img src="{{url_for('static', filename='StdToSciNot.png')}}" class="figure-img img-fluid">
+                    </figure>
+                </div>
+            </div>
+            <div class="row justify-content-center wrapper text-center">
+                <div class="col-7">
+                    <figure class="figure">
+                        <img src="{{url_for('static', filename='SciToStdNot.png')}}" class="figure-img img-fluid">
+                    </figure>
+                </div>
+            </div>
+            <a class="btn btn-success btn-lg mr-2" href="/scinotation" role="button">Practice</a>
+        </div>
+    {% endif %}
+{% endblock %}
