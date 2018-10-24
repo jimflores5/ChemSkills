@@ -302,28 +302,28 @@ def sfquiz():
         ('Convert to scientific notation','Convert to standard notation'),
         ('Calculate and round the answers to the correct number of sig figs','Calculate and round the answers to the correct number of sig figs')]
         listAttempt = int(session.get('listAttempt',None)) + 1
-        if listAttempt == 1:  #establish initial list of values to present to user
+        if listAttempt == 1:  #Establish initial list of values to present to user
             session['numCorrect'] = 0
             numQuestions = 10
             if choice == 'sigfigcounting':
                 while len(practiceList) < 10:
-                    if len(practiceList) < 5:
+                    if len(practiceList) < 5:       #Generate 5 random numbers having 1 - 6 sig figs.
                         sigFigs = random.randrange(1,7)
                         power = random.randrange(-5,9)
                         value = SigFigsBlueprints.MakeNumber(sigFigs,power)
                         practiceList.append((value,sigFigs))
                     else:
                         iffyValue = True
-                        while iffyValue:
-                            sigFigs = random.randrange(1,7)
+                        while iffyValue:            #Start with a value that has 8 sig figs and ask the user to round it to 1 - 5 sig figs.
+                            sigFigs = random.randrange(1,6)
                             power = random.randrange(-4,6)
-                            origValue = SigFigsBlueprints.MakeNumber(9,power)
+                            origValue = SigFigsBlueprints.MakeNumber(8,power)
                             correctAnswer = SigFigsBlueprints.RoundValue(origValue, sigFigs)
                             iffyValue = SigFigsBlueprints.CheckRounding(correctAnswer,sigFigs)
                             value = (origValue,correctAnswer,sigFigs)
                         practiceList.append(value)
             elif choice == 'scinotation':
-                while len(practiceList) < numQuestions:
+                while len(practiceList) < numQuestions:  #Generate 10 random numbers listed in standard and scientific notation.
                     sigFigs = random.randrange(1,5)
                     power = random.randrange(-5,7)
                     standard = SigFigsBlueprints.MakeNumber(sigFigs,power)
@@ -331,13 +331,13 @@ def sfquiz():
                     value = (standard,sciDecimal,power)
                     practiceList.append(value)
             else:
-                while len(practiceList) < numQuestions:
+                while len(practiceList) < numQuestions:    #Build 10 simple math problems using randomly chosen operators and values.
                     if len(practiceList) < 5:
                         operation = random.randrange(2)    #Randomly select '+' (0) or '-' (1).
                     else:
                         operation = random.randrange(2)+2    #Randomly select '*' (2) or '/' (3).
-                    pair = chooseQuizNumbers(operation)
-                    practiceList.append(pair)
+                    question_params = chooseQuizNumbers(operation)
+                    practiceList.append(question_params)
             session['numQuestions'] = numQuestions
             session['listAttempt'] = listAttempt
             return render_template('sfquiz.html', title=title, instructions = instructions, choice = choice, practiceList = practiceList, numCorrect = 0, tally = 0, answers = answers, correct = correct, listAttempt = listAttempt, numQuestions = numQuestions, exponents = exponents)
@@ -372,8 +372,14 @@ def sfquiz():
                         correctAnswer = (sciDecimal,power)
                     else:
                         correctAnswer = standard
+                else:
+                    firstNum = request.form['firstNum'+str(item)]
+                    secondNum = request.form['secondNum'+str(item)]
+                    operation = request.form['operation'+str(item)]
+                    correctAnswer = request.form['result'+str(item)]
+                    practiceList.append((firstNum,secondNum,operation,correctAnswer))
 
-                if (choice == 'sigfigcounting' and (item < 5 and answers[item] == correctAnswer) or (item >= 5 and SigFigsBlueprints.CheckAnswer(correctAnswer,answers[item]))) or (choice == 'scinotation' and (item < 5 and answer == correctAnswer) or (item >= 5 and answers[item] == correctAnswer)):
+                if (choice == 'sigfigcounting' and (item < 5 and answers[item] == correctAnswer) or (item >= 5 and SigFigsBlueprints.CheckAnswer(correctAnswer,answers[item]))) or (choice == 'scinotation' and (item < 5 and answer == correctAnswer) or (item >= 5 and answers[item] == correctAnswer)) or (choice == 'sigfigcalcs' and SigFigsBlueprints.CheckAnswer(correctAnswer, answers[item])):
                     flash(':-)', 'correct')
                     if listAttempt == 2:
                         numCorrect += 1
@@ -382,7 +388,6 @@ def sfquiz():
                 else:
                     flash('X', 'error')
                     correct.append(False)
-            print(answers,practiceList)
             ratioCorrect = round(Decimal(numCorrect/numQuestions*100),1)
             session['numCorrect'] = numCorrect
             session['listAttempt'] = listAttempt
@@ -404,8 +409,13 @@ def updateprogress():
         email = session.get('email',None)
         user = Students.query.filter_by(school_email=email).first()
         updateDBscores(user,choice,new_score)
+        label_index = student_display_data.index(choice)
+        if label_index < 3:
+            quiz_menu_choice = 'sfquiz'
+        else:
+            quiz_menu_choice = 'namingquizmenu'
 
-        return render_template('updateprogress.html', afterUpload = True, skill = skill)
+        return render_template('updateprogress.html', afterUpload = True, skill = skill, quiz_menu_choice = quiz_menu_choice)
 
     choice = session.get('choice',None)
     email = session.get('email',None)

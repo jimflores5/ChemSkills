@@ -106,7 +106,10 @@
                                         <input name="sciDecimal{{item}}" type="hidden" value="{{practiceList[item][1]}}">
                                         <input name="power{{item}}" type="hidden" value="{{practiceList[item][2]}}">
                                     {% else %}
-                                        <input name="practiceList{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="firstNum{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                        <input name="secondNum{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="operation{{item}}" type="hidden" value="{{practiceList[item][2]}}">
+                                        <input name="result{{item}}" type="hidden" value="{{practiceList[item][3]}}">
                                     {% endif %}
                                 {% endfor %}
                             </ol>
@@ -158,7 +161,10 @@
                                         <input name="sciDecimal{{item}}" type="hidden" value="{{practiceList[item][1]}}">
                                         <input name="power{{item}}" type="hidden" value="{{practiceList[item][2]}}">
                                     {% else %}
-                                        <input name="practiceList{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="firstNum{{item}}" type="hidden" value="{{practiceList[item][0]}}">
+                                        <input name="secondNum{{item}}" type="hidden" value="{{practiceList[item][1]}}">
+                                        <input name="operation{{item}}" type="hidden" value="{{practiceList[item][2]}}">
+                                        <input name="result{{item}}" type="hidden" value="{{practiceList[item][3]}}">
                                     {% endif %}
                                 {% endfor %}
                             </ol>
