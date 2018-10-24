@@ -151,7 +151,6 @@ def addWithPlaceholders(first,second):
         zeroCount = first.count("0")
     temp1 = float(first)/10**zeroCount
     temp2 = float(second)/10**zeroCount
-    print(first,second,zeroCount,temp1+temp2)
     result = str(int(round(temp1+temp2,0))*10**zeroCount)
     return result
 
