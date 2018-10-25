@@ -37,13 +37,13 @@
                                     </div>
                                     <div class="col-3 wrapper text-left">
                                         {% if info_list[item][1] == 'name' and progress == 2 %}
-                                            <input name="{{info_list[item][1]}}" required type='text' value="{{name}}" size = "30">
+                                            <input name="{{info_list[item][1]}}" required type='text' value="{{name}}" size = "25">
                                         {% elif info_list[item][1] == 'school_email' and progress == 2 %}
-                                            <input name="{{info_list[item][1]}}" required type='email' value="{{email}}" size = "30">
+                                            <input name="{{info_list[item][1]}}" required type='email' value="{{email}}" size = "25">
                                         {% elif info_list[item][1] == 'teacher_email' and progress == 2 %}
-                                            <input name="{{info_list[item][1]}}" required type='email' value="{{temail}}" size = "30">
+                                            <input name="{{info_list[item][1]}}" required type='email' value="{{temail}}" size = "25">
                                         {% else%}
-                                            <input name="{{info_list[item][1]}}" type="{{info_list[item][2]}}" placeholder="{{info_list[item][3]}}"size = "30" {% if info_list[item][1] != 'class2' %} required {% endif %}>
+                                            <input name="{{info_list[item][1]}}" type="{{info_list[item][2]}}" placeholder="{{info_list[item][3]}}"size = "25" {% if info_list[item][1] != 'class2' %} required {% endif %}>
                                         {% endif %}
                                     </div>
                                 </div>

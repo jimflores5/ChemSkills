@@ -21,6 +21,27 @@
                 <li style="color:green">Class #1 = {{user.class1}}</li>
                 <li style="color:purple">Class #2 = {{user.class2}}</li>
             </ul>
+            <p style="color:brown"><u>Your students' skill check results</u>:</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered wrapper text-center" style="font-size:1.1vw">
+                    <thead>
+                    <tr>
+                        {% for item in range(headings|length) %}
+                            <th scope="col" {% if item%2 != 0 %} style="color:blue" {% endif %}>{{headings[item]}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in student_data %}
+                            <tr>
+                                {% for item in range(row|length) %}
+                                    <td {% if item%2 != 0 %} style="color:blue" {% endif %}>{{row[item]}}{% if row[item][0].isdigit() %}%{% endif %}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
             <ul>
                 <li style="color:blue">School e-mail = {{user.school_email}}</li>
@@ -40,8 +61,8 @@
                     <tbody>
                     <tr>
                         <td>Results:</td>
-                        {% for item in range(user_data|length) %}
-                            <td {% if item%2 == 0 %} style="color:blue" {% endif %}>{{user_data[item]}}{% if user_data[item] != 'None' %}%{% endif %}</td>
+                        {% for item in range(student_data|length) %}
+                            <td {% if item%2 == 0 %} style="color:blue" {% endif %}>{{student_data[item]}}{% if student_data[item] != 'None' %}%{% endif %}</td>
                         {% endfor %}
                     </tr>
                     </tbody>

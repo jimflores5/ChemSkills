@@ -23,7 +23,7 @@ class Students(db.Model):
     name = db.Column(db.String(20))
     school_email = db.Column(db.String(60), primary_key=True)
     teacher_email = db.Column(db.String(60))
-    password = db.Column(db.String(20))
+    course = db.Column(db.String(15))
     sigfigcounting = db.Column(db.Integer)
     sigfigcalcs = db.Column(db.Integer)
     scinotation = db.Column(db.Integer)
@@ -33,25 +33,22 @@ class Students(db.Model):
     ffnC = db.Column(db.Integer)
     allnaming = db.Column(db.Integer)
 
-    def __init__(self,name,school_email,teacher_email,password):
+    def __init__(self,name,school_email,teacher_email):
         self.name = name
         self.school_email = school_email
         self.teacher_email = teacher_email
-        self.password = password
 
 class Teachers(db.Model):
     id = db.Column(db.Integer)
     name = db.Column(db.String(20))
     email = db.Column(db.String(60), primary_key=True)
-    password = db.Column(db.String(20))
     class1 = db.Column(db.String(15))
     class2 = db.Column(db.String(15))
     #students = db.relationship('Students', backref='teacher_email')
 
-    def __init__(self,name,email,password,class1,class2=''):
+    def __init__(self,name,email,class1,class2=''):
         self.name = name
         self.email = email
-        self.password = password
         self.class1 = class1
         self.class2 = class2
 
@@ -78,15 +75,20 @@ quiz_labels = {'sigfigcounting':'Counting Sig Figs','sigfigcalcs':'Math with Sig
 student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','SigFigCounting','SigFigCalcs','SciNotation','Nameionic','Namecovalent','FFNI','FFNC', 'AllNaming']
 student_display_data = ['sigfigcounting','sigfigcalcs','scinotation','nameionic','namecovalent','ffnI','ffnC','allnaming']  #Database field names.
 student_display_headings = ['Counting Sig Figs','Math with Sig Figs','Scientific Notation','Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)','Practice All Naming']  #Column names to display on User Info page.
+teacher_roster_data = ['name','school_email','course','sigfigcounting','sigfigcalcs','scinotation','nameionic','namecovalent','ffnI','ffnC','allnaming'] 
 
-def extractData(row):
+def extractData(row,role):
     all_info = {}
     data = []
     for column in row.__table__.columns:
         all_info[column.name] = str(getattr(row, column.name))
     for item in all_info:
-        if item in student_display_data:
-            data.append(all_info.get(item))
+        if role.lower() == 'student':
+            if item in student_display_data:
+                data.append(all_info.get(item))
+        else:
+            if item in teacher_roster_data:
+                data.append(all_info.get(item))
     return data
 
 def extractScore(user,skill):
@@ -127,12 +129,12 @@ def checkRegistration(role,password,confirm,email,temail=''):
     if password != confirm:
         errors[0] = True        #Passwords do not match.
     if role == "Student":
-        if Students.query.filter_by(school_email=email).first():  #Check current DB for student's email.
+        if Users.query.filter_by(email=email).first():  #Check current DB for student's email.
             errors[1] = True    #Already registered.
         if not Teachers.query.filter_by(email=temail).first():  #Check DB for teacher's email.
             errors[2] = True    #Teacher e-mail not in DB.
     else:
-        if Teachers.query.filter_by(email=email).first():  #Check current DB for teacher's email.
+        if Users.query.filter_by(email=email).first():  #Check current DB for teacher's email.
             errors[1] = True    #Already registered.
 
     return errors
@@ -494,14 +496,14 @@ def register():
                 return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
                 pw = pwhash.make_pw_hash(password)
-                new_teacher = Teachers(name,email,pw,request.form['class1'],request.form['class2'])
+                new_teacher = Teachers(name,email,request.form['class1'],request.form['class2'])
                 new_user = Users(name,email,pw,role)
                 db.session.add(new_teacher)
                 db.session.add(new_user)
                 db.session.commit()
             else: 
                 pw = pwhash.make_pw_hash(password)
-                new_student = Students(name,email,request.form['teacher_email'].lower(),pw)
+                new_student = Students(name,email,request.form['teacher_email'].lower())
                 new_user = Users(name,email,pw,role)
                 db.session.add(new_student)
                 db.session.add(new_user)
@@ -528,13 +530,16 @@ def userinfo():
     role = who.role
     if role.lower()== 'teacher':
         user = Teachers.query.filter_by(email=email).first()
-        user_data = []
-        headings = []
+        roster = Students.query.filter_by(teacher_email=email).order_by('name').all()
+        student_data = []
+        for student in roster:
+            student_data.append(extractData(student,role))
+        headings = ['Name','e-mail','Class'] + student_display_headings
     else:
         user = Students.query.filter_by(school_email=email).first()
         headings = student_display_headings
-        user_data = extractData(user)
-    return render_template('userinfo.html',user=user,role=role, headings = headings, user_data = user_data)
+        student_data = extractData(user,role)
+    return render_template('userinfo.html',user=user,role=role, headings = headings, student_data = student_data)
 
 if __name__ == '__main__':
     app.run()
