@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, render_template, session, flash
 import cgi
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
-import NamingBlueprints, SigFigsBlueprints
+import NamingBlueprints, SigFigsBlueprints, pwhash
 from NamingBlueprints import naming_practice_blueprint
 from SigFigsBlueprints import sigfigs_blueprint
 
@@ -411,14 +411,19 @@ def updateprogress():
         updateDBscores(user,choice,new_score)
         label_index = student_display_data.index(choice)
         if label_index < 3:
-            quiz_menu_choice = 'sfquiz'
+            quiz_tutorial_choice = ('sfquiz','sigfigindex')
         else:
-            quiz_menu_choice = 'namingquizmenu'
+            quiz_tutorial_choice = ('namingquizmenu','namingindex')
 
-        return render_template('updateprogress.html', afterUpload = True, skill = skill, quiz_menu_choice = quiz_menu_choice)
+        return render_template('updateprogress.html', afterUpload = True, skill = skill, quiz_tutorial_choice = quiz_tutorial_choice)
 
     choice = session.get('choice',None)
     email = session.get('email',None)
+    label_index = student_display_data.index(choice)
+    if label_index < 3:
+        quiz_tutorial_choice = ('sfquiz','sigfigindex')
+    else:
+        quiz_tutorial_choice = ('namingquizmenu','namingindex')
     for item in quiz_labels:
         if item == choice:
             skill = quiz_labels.get(item)
@@ -433,7 +438,7 @@ def updateprogress():
         displayText = 1
     else:
         displayText = 2
-    return render_template('updateprogress.html',skill = skill, prev_score = prev_score, current_score = current_score, old_rank = old_rank, rank = rank, displayText = displayText)
+    return render_template('updateprogress.html',skill = skill, prev_score = prev_score, current_score = current_score, old_rank = old_rank, rank = rank, displayText = displayText, quiz_tutorial_choice = quiz_tutorial_choice)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -441,11 +446,11 @@ def login():
         email = request.form['email'].lower()
         password = request.form['password']
         user = Users.query.filter_by(email=email).first()
-        if user and user.password == password:
+        if user and pwhash.check_pw_hash(password, user.password):
             session['email'] = email
             session['role'] = user.role
             return redirect('/')
-        elif user and user.password != password:
+        elif user and not pwhash.check_pw_hash(password, user.password):
             flash('Wrong password.', 'error')
         elif not user:
             flash('Incorrect username','error')
@@ -488,14 +493,16 @@ def register():
                     flash("Teacher e-mail not found. Try again, or use NoTeacher@school.edu to register outside of your class.",'error')
                 return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
-                new_teacher = Teachers(name,email,password,request.form['class1'],request.form['class2'])
-                new_user = Users(name,email,password,role)
+                pw = pwhash.make_pw_hash(password)
+                new_teacher = Teachers(name,email,pw,request.form['class1'],request.form['class2'])
+                new_user = Users(name,email,pw,role)
                 db.session.add(new_teacher)
                 db.session.add(new_user)
                 db.session.commit()
             else: 
-                new_student = Students(name,email,request.form['teacher_email'].lower(),password)
-                new_user = Users(name,email,password,role)
+                pw = pwhash.make_pw_hash(password)
+                new_student = Students(name,email,request.form['teacher_email'].lower(),pw)
+                new_user = Users(name,email,pw,role)
                 db.session.add(new_student)
                 db.session.add(new_user)
                 db.session.commit()

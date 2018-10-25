@@ -29,15 +29,15 @@
             {% elif displayText == 1 %}
                     <div class="wrapper text-center" style="color:green">
                         <p> Ok, you maintained your skill level.  Would you like to try again?</p>
-                        <a class="btn btn-success ml-2" href="/namingquiz" role="button">Yes</a>
+                        <a class="btn btn-success ml-2" href="/{{quiz_tutorial_choice[0]}}" role="button">Yes</a>
                         <a class="btn btn-danger ml-2" href="/" role="button">No</a>
                     </div>
             {% else %}
                     <div class="wrapper text-center" style="color:purple">
                         <p> Hmmm...  Remember that Effort = Outcome.</p>
                         <p> Would you like to try the quiz again or review the unscored tutorial and practice resources?</p>
-                        <a class="btn btn-success ml-2" href="/namingquiz" role="button">Try again</a>
-                        <a class="btn btn-danger ml-2" href="/namingindex" role="button">Tutorial/Practice</a>
+                        <a class="btn btn-success ml-2" href="/{{quiz_tutorial_choice[0]}}" role="button">Try again</a>
+                        <a class="btn btn-danger ml-2" href="/{{quiz_tutorial_choice[1]}}" role="button">Tutorial/Practice</a>
                     </div>
                 </form>
             {% endif %}
@@ -46,7 +46,7 @@
         <div class="container-fluid wrapper text-center" style="font-size:1.7vw">
             <p>Your new result for <span style="color:blue">{{skill}}</span> has been uploaded.</p>
             <p style="color:brown">Would you like to try a different quiz?</p>
-            <a class="btn btn-success ml-2" href="/{{quiz_menu_choice}}" role="button">Sure!</a>
+            <a class="btn btn-success ml-2" href="/{{quiz_tutorial_choice[0]}}" role="button">Sure!</a>
             <a class="btn btn-danger ml-2" href="/userinfo" role="button">No thanks</a>
         </div>
     {% endif %}
