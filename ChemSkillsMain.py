@@ -539,7 +539,32 @@ def userinfo():
         user = Students.query.filter_by(school_email=email).first()
         headings = student_display_headings
         student_data = extractData(user,role)
-    return render_template('userinfo.html',user=user,role=role, headings = headings, student_data = student_data)
+    return render_template('userinfo.html', title='User Information',user=user,role=role, headings = headings, student_data = student_data)
+
+@app.route('/changepw', methods=['POST', 'GET'])
+def changepw():
+    if request.method == 'POST':
+        email = session.get('email',None)
+        user = Users.query.filter_by(email=email).first()
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        confirm = request.form['confirm']
+        errors = [False,False]
+        if not user or not pwhash.check_pw_hash(old_password, user.password):
+            errors[0] = True
+        elif confirm != new_password:
+            errors[1] = True
+        if True in errors:
+            if errors[0]:
+                flash('Wrong old password entered.', 'error')
+            else:
+                flash('New passwords do not match.', 'error')
+            return render_template('changepw.html', title='Change Password', changed = False)
+        user.password = pwhash.make_pw_hash(new_password)
+        db.session.commit()
+        return render_template('changepw.html', title='Change Password', changed = True)
+
+    return render_template('changepw.html', title='Change Password', changed = False)
 
 if __name__ == '__main__':
     app.run()

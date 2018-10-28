@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if not changed %}
+        <div class="container-fluid wrapper text-left">
+            <h2><u>Change Password</u>:</h2>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                <form action="/changepw" method="post">
+                    <div class="row">
+                        <div class="col-2 wrapper text-right">
+                            <label for="old_password">Old Password: </label><br/>
+                            <label for="new_password">New Password: </label><br/>
+                            <label for="confirm">Confirm New Password: </label>
+                        </div>
+                        <div class="col-3 wrapper text-left">
+                            <input name="old_password" type="password" size = "20" required><br/>
+                            <input name="new_password" type="password" size = "20" required><br/>
+                            <input name="confirm" type="password" size = "20" required>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class='col-5 wrapper text-center'>
+                        <a class="btn btn-secondary" href="/userinfo" role="button">Back</a>
+                        <input type="submit" class="btn btn-danger" value="Update"><br/>
+                        {% if messages %}
+                            <span class='{{messages[0][0]}}' style="font-size: 14pt">{{messages[0][1]}}</span>
+                        {% endif %}
+                    </div>
+                </form>
+            {% endwith %}
+        </div>
+    {% else %}
+        <div class="container-fluid wrapper text-center">
+            <h2>Your password has been changed.</h2>
+            <a class="btn btn-primary ml-2" href="/" role="button">Main Menu</a>
+            <a class="btn btn-secondary ml-2" href="/userinfo" role="button">User Info</a>
+        </div>
+    {% endif %}
+{% endblock %}
