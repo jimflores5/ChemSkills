@@ -6,21 +6,25 @@
             <h2><u>Change Password</u>:</h2>
             {% with messages = get_flashed_messages(with_categories=True) %}
                 <form action="/changepw" method="post">
-                    <div class="row">
-                        <div class="col-2 wrapper text-right">
-                            <label for="old_password">Old Password: </label><br/>
-                            <label for="new_password">New Password: </label><br/>
-                            <label for="confirm">Confirm New Password: </label>
-                        </div>
-                        <div class="col-3 wrapper text-left">
-                            <input name="old_password" type="password" size = "20" required><br/>
-                            <input name="new_password" type="password" size = "20" required><br/>
-                            <input name="confirm" type="password" size = "20" required>
-                        </div>
-                    </div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="wrapper text-right">Old Password:</td>
+                                <td><input name="old_password" type="password" size = "20" required></td>
+                            </tr>
+                            <tr>
+                                <td class="wrapper text-right">New Password:</td>
+                                <td><input name="new_password" type="password" size = "20" required></td>
+                            </tr>
+                            <tr>
+                                <td class="wrapper text-right">Confirm New Password:</td>
+                                <td><input name="confirm" type="password" size = "20" required></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <br/>
-                    <div class='col-5 wrapper text-center'>
-                        <a class="btn btn-secondary" href="/userinfo" role="button">Back</a>
+                    <div class='col-4 wrapper text-center'>
+                        <a class="btn btn-secondary ml-2" href="/userinfo" role="button">Back</a>
                         <input type="submit" class="btn btn-danger" value="Update"><br/>
                         {% if messages %}
                             <span class='{{messages[0][0]}}' style="font-size: 14pt">{{messages[0][1]}}</span>

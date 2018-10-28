@@ -136,7 +136,6 @@ def checkRegistration(role,password,confirm,email,temail=''):
     else:
         if Users.query.filter_by(email=email).first():  #Check current DB for teacher's email.
             errors[1] = True    #Already registered.
-
     return errors
 
 def chooseQuizNumbers(operation):   #'operation': 0 = +, 1 = -, 2 = *, 3 = /.
@@ -150,7 +149,6 @@ def chooseQuizNumbers(operation):   #'operation': 0 = +, 1 = -, 2 = *, 3 = /.
             value = SigFigsBlueprints.MakeNumber(sigFigs,power)
             if not SigFigsBlueprints.CheckRounding(value,sigFigs):
                 values.append((value,sigFigs))
-        print(values)
     else:                           #For * and /, create 2 values between 0.01 and 900 with 1 - 5 sig figs.
         while len(values) < 2:
             sigFigs = random.randrange(1,6)
