@@ -3,7 +3,7 @@
 {% block content %}
     <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
         <div class="ml-3">
-            <a class="btn btn-primary" href="/" role="button" disabled>Main Menu</a>
+            <a class="btn btn-primary" href="/" role="button">Main Menu</a>
         </div>
         <div class = 'wrapper text-center'>
             <h1 class="wrapper text-center"><u>Information</u></h1>
@@ -20,6 +20,7 @@
                 <li style="color:blue">School e-mail = {{user.email}}</li>
                 <li style="color:green">Class #1 = {{user.class1}}</li>
                 <li style="color:purple">Class #2 = {{user.class2}}</li>
+                <li style="color:lightskyblue"><a class="btn btn-sm btn-info" href="/classlists" role="button">Assign Students to Classes</a></li>
                 <li><a class="btn btn-sm btn-secondary" href="/changepw" role="button">Change Password</a></li>
             </ul>
             <p style="color:brown"><u>Your students' skill check results</u>:</p>

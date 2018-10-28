@@ -521,7 +521,7 @@ def logout():
 @app.route('/userinfo', methods=['POST', 'GET'])
 def userinfo():
     if request.method == 'POST':
-        return render_template('userinfo.html')
+        return render_template('userinfo.html', title='User Information')
 
     email = session.get('email',None)
     who = Users.query.filter_by(email=email).first()
@@ -563,6 +563,33 @@ def changepw():
         return render_template('changepw.html', title='Change Password', changed = True)
 
     return render_template('changepw.html', title='Change Password', changed = False)
+
+@app.route('/classlists', methods=['POST', 'GET'])
+def classlists():
+    user = Users.query.filter_by(email=session.get('email',None)).first()
+    if user.role.lower() != 'teacher':
+        return redirect('/')
+    if request.method == 'POST':
+        roster = Students.query.filter_by(teacher_email=user.email).order_by('name').all()
+        for student in roster:
+            student.course = request.form[str(student.id)]
+        db.session.commit()
+        return redirect('/userinfo')
+
+    roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
+    teacher = Teachers.query.filter_by(email=user.email).first()
+    courseOptions = ['class1','class2']
+    all_info = {}
+    classTitles = []
+    for column in teacher.__table__.columns:
+        all_info[column.name] = str(getattr(teacher, column.name))
+    for item in all_info:
+        if item in courseOptions and all_info.get(item) != '':
+            classTitles.append(all_info.get(item))
+    if 'None' not in classTitles:
+        classTitles.append('None')
+
+    return render_template('classlists.html',title="Assign Students", roster = roster, classTitles = classTitles)
 
 if __name__ == '__main__':
     app.run()
