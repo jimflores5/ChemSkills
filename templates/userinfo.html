@@ -14,15 +14,35 @@
     </div> 
     <br/>
     <div class="container-fluid" style="font-size:1.5vw">
-        <p><u>Hello {{user.name}}, here is what we have on file for you</u>:</p>
         {% if role.lower() == "teacher" %}
-            <ul>
-                <li style="color:blue">School e-mail = {{user.email}}</li>
-                <li style="color:green">Class #1 = {{user.class1}}</li>
-                <li style="color:purple">Class #2 = {{user.class2}}</li>
-                <li style="color:lightskyblue"><a class="btn btn-sm btn-info" href="/classlists" role="button">Assign Students to Classes</a></li>
-                <li><a class="btn btn-sm btn-secondary" href="/changepw" role="button">Change Password</a></li>
-            </ul>
+            <div class="row">
+                <div class="col-5">
+                    <p><u>Hello {{user.name}}, here is what we have on file for you</u>:</p>
+                    <ul>
+                        <li style="color:blue">School e-mail = {{user.email}}</li>
+                        <li style="color:green">Class #1 = {{user.class1}}</li>
+                        <li style="color:purple">Class #2 = {{user.class2}}</li>
+                    </ul>
+                </div>
+                <div class="col-3">
+                    <p><u>Actions</u>:</p>
+                    <a class="btn btn-sm btn-info" href="/classlists" role="button">Assign Students to Classes</a><br/>
+                    <a class="btn btn-sm btn-secondary" href="/changepw" role="button">Change Password</a>
+                    </ul>
+                </div>
+                <div class="col-3 wrapper">
+                    <p><u>Display classes</u>:</p>
+                    <form action="/userinfo" method="post">
+                        {% for course in classList %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="display" value="{{course}}" {% if course in displayOption %} checked {% endif %}>
+                                <label class="form-check-label" for="display">{% if course != 'None' %}{{course}}{% else %}No class assigned{% endif %}</label>
+                            </div>
+                        {% endfor %}
+                        <input class="btn btn-sm btn-success ml-5" type="submit" value="Go">
+                    </form>
+                </div>
+            </div>
             <p style="color:brown"><u>Your students' skill check results</u>:</p>
             <div class="table-responsive">
                 <table class="table table-sm table-bordered wrapper text-center" style="font-size:1.1vw">

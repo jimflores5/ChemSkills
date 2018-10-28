@@ -108,6 +108,19 @@ def updateDBscores(student,header,new_value):
     db.session.commit()
     return
 
+def getClassList(teacher):
+    courseOptions = ['class1','class2']
+    all_info = {}
+    classTitles = []
+    for column in teacher.__table__.columns:
+        all_info[column.name] = str(getattr(teacher, column.name))
+    for item in all_info:
+        if item in courseOptions and all_info.get(item) != '':
+            classTitles.append(all_info.get(item))
+    if 'None' not in classTitles:
+        classTitles.append('None')
+    return classTitles
+
 def determineRank(score):
     numQuestions = session.get('numQuestions',None)
     if numQuestions == 20:
@@ -520,12 +533,24 @@ def logout():
 
 @app.route('/userinfo', methods=['POST', 'GET'])
 def userinfo():
-    if request.method == 'POST':
-        return render_template('userinfo.html', title='User Information')
-
     email = session.get('email',None)
     who = Users.query.filter_by(email=email).first()
     role = who.role
+    if request.method == 'POST':
+        displayOption = request.form.getlist('display')
+        if 'All' in displayOption or displayOption == []:
+            return redirect('/userinfo')
+        else:
+            user = Teachers.query.filter_by(email=email).first()
+            classList = ['All'] + getClassList(user)
+            student_data = []
+            for course in displayOption:
+                roster = Students.query.filter_by(teacher_email=email).filter_by(course=course).order_by('name').all()
+                for student in roster:
+                    student_data.append(extractData(student,role))
+            headings = ['Name','e-mail','Class'] + student_display_headings
+        return render_template('userinfo.html', title='User Information', user=user,role=role, headings = headings, student_data = student_data, displayOption = displayOption, classList = classList)
+
     if role.lower()== 'teacher':
         user = Teachers.query.filter_by(email=email).first()
         roster = Students.query.filter_by(teacher_email=email).order_by('name').all()
@@ -533,11 +558,12 @@ def userinfo():
         for student in roster:
             student_data.append(extractData(student,role))
         headings = ['Name','e-mail','Class'] + student_display_headings
+        classList = ['All'] + getClassList(user)
     else:
         user = Students.query.filter_by(school_email=email).first()
         headings = student_display_headings
         student_data = extractData(user,role)
-    return render_template('userinfo.html', title='User Information',user=user,role=role, headings = headings, student_data = student_data)
+    return render_template('userinfo.html', title='User Information',user=user,role=role, headings = headings, student_data = student_data, displayOption=['All'], classList=classList)
 
 @app.route('/changepw', methods=['POST', 'GET'])
 def changepw():
@@ -578,16 +604,7 @@ def classlists():
 
     roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
     teacher = Teachers.query.filter_by(email=user.email).first()
-    courseOptions = ['class1','class2']
-    all_info = {}
-    classTitles = []
-    for column in teacher.__table__.columns:
-        all_info[column.name] = str(getattr(teacher, column.name))
-    for item in all_info:
-        if item in courseOptions and all_info.get(item) != '':
-            classTitles.append(all_info.get(item))
-    if 'None' not in classTitles:
-        classTitles.append('None')
+    classTitles = getClassList(teacher)
 
     return render_template('classlists.html',title="Assign Students", roster = roster, classTitles = classTitles)
 
