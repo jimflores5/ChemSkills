@@ -56,7 +56,7 @@ class Teachers(db.Model):
 class Users(db.Model):
     name = db.Column(db.String(20))
     email = db.Column(db.String(60), primary_key=True)
-    password = db.Column(db.String(20))
+    password = db.Column(db.String(75))
     role = db.Column(db.String(10))
 
     def __init__(self,name,email,password,role):
@@ -73,7 +73,7 @@ digits = ['0','1','2','3','4','5','6','7','8','9']
 quiz_labels = {'sigfigcounting':'Counting Sig Figs','sigfigcalcs':'Math with Sig Figs','scinotation':'Scientific Notation','nameionic':'Naming Ionic Compounds','namecovalent':'Naming Covalent Compounds','ffnI':'Formulas From Names (Ionic)','ffnC':'Formulas From Names (Covalent)','allnaming':'Practice All Naming'}
 #Dictionary key,value = Quiz menu label : Full skill name
 
-student_DB_headings = ['ID','Name','School_email','Teacher_email','Password','SigFigCounting','SigFigCalcs','SciNotation','Nameionic','Namecovalent','FFNI','FFNC', 'AllNaming']
+student_DB_headings = ['ID','Name','School_email','Teacher_email','SigFigCounting','SigFigCalcs','SciNotation','Nameionic','Namecovalent','FFNI','FFNC', 'AllNaming']
 student_display_data = ['sigfigcounting','sigfigcalcs','scinotation','nameionic','namecovalent','ffnI','ffnC','allnaming']  #Database field names.
 student_display_headings = ['Counting Sig Figs','Math with Sig Figs','Scientific Notation','Naming Ionic Compounds','Naming Covalent Compounds','Formulas from Names (Ionic)','Formulas from Names (Covalent)','Practice All Naming']  #Column names to display on User Info page.
 teacher_roster_data = ['name','school_email','course','sigfigcounting','sigfigcalcs','scinotation','nameionic','namecovalent','ffnI','ffnC','allnaming'] 
@@ -592,6 +592,7 @@ def userinfo():
         headings = student_display_headings
         student_data = extractData(user,role)
         averages = []
+        classList = []
     return render_template('userinfo.html', title='User Information',user=user,role=role, headings = headings, student_data = student_data, displayOption=['All'], classList=classList, averages = averages)
 
 @app.route('/changepw', methods=['POST', 'GET'])
