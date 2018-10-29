@@ -61,6 +61,14 @@
                                 {% endfor %}
                             </tr>
                         {% endfor %}
+                            <tr>
+                                <td> Averages:</td>
+                                <td>  </td>
+                                <td>  </td>
+                                {% for item in range(averages|length) %}
+                                    <td style="color:red">{{averages[item]}}%</td>
+                                {% endfor %}
+                            </tr>
                     </tbody>
                 </table>
             </div>

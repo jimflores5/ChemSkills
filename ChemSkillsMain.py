@@ -3,6 +3,7 @@ from flask import Flask, request, redirect, render_template, session, flash
 import cgi
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 import NamingBlueprints, SigFigsBlueprints, pwhash
 from NamingBlueprints import naming_practice_blueprint
 from SigFigsBlueprints import sigfigs_blueprint
@@ -120,6 +121,31 @@ def getClassList(teacher):
     if 'None' not in classTitles:
         classTitles.append('None')
     return classTitles
+
+def averageScores(teacher, fieldnames, roster='all'):
+    averages = []
+    for column in Students.__table__.columns:
+        if column.name in fieldnames:
+            if 'all' in roster or 'All' in roster:
+                average = db.session.query(func.avg(getattr(Students, column.name))).filter_by(teacher_email=teacher.email).all()
+                try:
+                    averages.append(round(average[0][0],1))
+                except:
+                    averages.append('---')
+            else:
+                total = 0
+                count = 0
+                for course in roster:
+                    try:
+                        total += db.session.query(func.sum(getattr(Students, column.name))).filter_by(teacher_email=teacher.email).filter_by(course=course).all()[0][0]
+                    except:
+                        total += 0
+                    count += db.session.query(func.count(getattr(Students, column.name))).filter_by(teacher_email=teacher.email).filter_by(course=course).all()[0][0]
+                try:
+                    averages.append(round(total/count,1))
+                except:
+                    averages.append('---')   
+    return averages
 
 def determineRank(score):
     numQuestions = session.get('numQuestions',None)
@@ -549,7 +575,8 @@ def userinfo():
                 for student in roster:
                     student_data.append(extractData(student,role))
             headings = ['Name','e-mail','Class'] + student_display_headings
-        return render_template('userinfo.html', title='User Information', user=user,role=role, headings = headings, student_data = student_data, displayOption = displayOption, classList = classList)
+            averages = averageScores(user, student_display_data, displayOption)
+        return render_template('userinfo.html', title='User Information', user=user,role=role, headings = headings, student_data = student_data, displayOption = displayOption, classList = classList, averages = averages)
 
     if role.lower()== 'teacher':
         user = Teachers.query.filter_by(email=email).first()
@@ -558,12 +585,14 @@ def userinfo():
         for student in roster:
             student_data.append(extractData(student,role))
         headings = ['Name','e-mail','Class'] + student_display_headings
+        averages = averageScores(user, student_display_data)
         classList = ['All'] + getClassList(user)
     else:
         user = Students.query.filter_by(school_email=email).first()
         headings = student_display_headings
         student_data = extractData(user,role)
-    return render_template('userinfo.html', title='User Information',user=user,role=role, headings = headings, student_data = student_data, displayOption=['All'], classList=classList)
+        averages = []
+    return render_template('userinfo.html', title='User Information',user=user,role=role, headings = headings, student_data = student_data, displayOption=['All'], classList=classList, averages = averages)
 
 @app.route('/changepw', methods=['POST', 'GET'])
 def changepw():
