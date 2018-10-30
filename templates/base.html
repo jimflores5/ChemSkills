@@ -33,7 +33,7 @@
                 position: absolute;
                 bottom: 0;
                 right: 0;
-                width: 10%;
+                width: 15%;
                 height: 30px;
                 line-height: 30px;
                 background-color: #f5f5f5;
@@ -45,6 +45,33 @@
     <body>
         {% block content %}
         {% endblock %}
+        {% if type == 'ionic' %}
+            <div class="wrapper text-center">
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Polyatomic Ion List
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='IonList.png')}}" class="figure-img img-fluid" style="width:45%; height:100%">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        {% elif type == 'molecular' %}
+            <div class="wrapper text-center">
+                <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Prefix List
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <figure class="figure">
+                            <img src="{{url_for('static', filename='Prefixes.png')}}" class="figure-img img-fluid" style="width:35%; height:100%">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> 
