@@ -27,9 +27,10 @@
                 <div class="col-3">
                     <p><u>Actions</u>:</p>
                     <a class="btn btn-sm btn-info" href="/classlists" role="button">Assign Students to Classes</a><br/>
-                    <a class="btn btn-sm btn-success" href="/changeroster/add" role="button">Add a Student</a><br/>
-                    <a class="btn btn-sm btn-warning" href="/changeroster/remove" role="button">Remove a Student</a><br/>
-                    <a class="btn btn-sm btn-secondary" href="/changepw" role="button">Change Password</a>
+                    <a class="btn btn-sm btn-success" href="/changeroster/add" role="button">Add a Student</a>
+                    <a class="btn btn-sm btn-warning" href="/changeroster/remove" role="button">Remove Students</a><br/>
+                    <a class="btn btn-sm btn-secondary" href="/changepw" role="button">Change Password</a><br/>
+                    <a class="btn btn-sm btn-danger" href="/deleteaccount" role="button">Delete My Account</a>
                     </ul>
                 </div>
                 <div class="col-3 wrapper">
@@ -80,6 +81,7 @@
                 <li style="color:blue">School e-mail = {{user.school_email}}</li>
                 <li style="color:green">Teacher's e-mail = {{user.teacher_email}}</li>
                 <li><a class="btn btn-sm btn-secondary" href="/changepw" role="button">Change Password</a></li>
+                <li><a class="btn btn-sm btn-warning" href="/deleteaccount" role="button">Delete My Account</a></li>
             </ul>
             <p style="color:brown"><u>Summary of your skill assessments</u>:</p>
             <div class="table-responsive">

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+        <div class="ml-3">
+            
+        </div>
+        <div class = 'wrapper text-center'>
+            <h1 class="wrapper text-center"><u>Delete Account</u></h1>
+        </div>
+        <div class="mr-3">
+            <a href="logout" class="btn btn-secondary mb-2" role="button">Logout</a>
+        </div>
+    </div> 
+    <br/>
+    <div class="container-fluid wrapper text-center" style="font-size:1.5vw">
+        <h3 style="color:red"><u>{{user.name}}, are you sure you want to do this?</u></h3>
+        {% if user.role|lower == 'student' %}
+            <p style="color:brown">(All your progress will be lost!)</p>
+        {% else %}
+            <p style="color:brown">(Even if you re-register, your students' records will be lost.)</p>
+        {% endif %}
+        <form action="/deleteaccount" method="post">
+            <div class='wrapper text-center'>
+                <input type="submit" class="btn btn-sm btn-danger" value="Delete Account">
+                <a class="btn btn-lg btn-primary ml-2" href="/userinfo" role="button">NO!</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

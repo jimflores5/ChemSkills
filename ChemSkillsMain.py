@@ -238,7 +238,7 @@ def require_login():
 
 @app.route('/')
 def mainindex():
-    role = session.get('role', None)
+    role = session.get('role', None).lower()
     return render_template('mainindex.html',title="Chem Skills Home",role=role)
 
 @app.route('/namingquizmenu')
@@ -681,6 +681,30 @@ def changeroster(type):
         roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
 
         return render_template('changeroster.html',title="Change Roster", roster = roster, action = type)
+
+@app.route('/deleteaccount', methods=['POST', 'GET'])
+def deleteaccount():
+    user = Users.query.filter_by(email=session.get('email',None)).first()
+    if request.method == 'POST':
+        if user.role.lower() == 'teacher':
+            teacher = Teachers.query.filter_by(id=user.id).first()
+            roster = Students.query.filter_by(teacher_email=teacher.email).all()
+            for student in roster:
+                student.teacher_email = "noteacher@school.edu" 
+                student.course = None
+                db.session.commit()
+            db.session.delete(teacher)
+            db.session.delete(user)
+            db.session.commit()
+        else:
+            student = Students.query.filter_by(id=user.id).first()
+            db.session.delete(student)
+            db.session.delete(user)
+            db.session.commit()
+        
+        return redirect('/logout')
+
+    return render_template('deleteaccount.html',title="Delete Account",user=user)
 
 if __name__ == '__main__':
     app.run()
