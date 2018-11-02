@@ -20,10 +20,10 @@ db = SQLAlchemy(app)
 app.secret_key = 'yrtsimehc'
 
 class Students(db.Model):
-    id = db.Column(db.Integer)
+    id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(20))
     school_email = db.Column(db.String(60), primary_key=True)
-    teacher_email = db.Column(db.String(60))
+    teacher_email = db.Column(db.String(60), db.ForeignKey('teachers.email'))
     course = db.Column(db.String(15))
     sigfigcounting = db.Column(db.Integer)
     sigfigcalcs = db.Column(db.Integer)
@@ -34,30 +34,35 @@ class Students(db.Model):
     ffnC = db.Column(db.Integer)
     allnaming = db.Column(db.Integer)
 
-    def __init__(self,name,school_email,teacher_email):
+    def __init__(self,user,name,school_email,teacher):
+        self.user = user
         self.name = name
         self.school_email = school_email
-        self.teacher_email = teacher_email
+        self.teacher = teacher
 
 class Teachers(db.Model):
-    id = db.Column(db.Integer)
+    id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(20))
     email = db.Column(db.String(60), primary_key=True)
     class1 = db.Column(db.String(15))
     class2 = db.Column(db.String(15))
-    #students = db.relationship('Students', backref='teacher_email')
+    students = db.relationship('Students', backref='teacher')
 
-    def __init__(self,name,email,class1,class2=''):
+    def __init__(self,user,name,email,class1,class2=''):
+        self.user = user
         self.name = name
         self.email = email
         self.class1 = class1
         self.class2 = class2
 
 class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
-    email = db.Column(db.String(60), primary_key=True)
+    email = db.Column(db.String(60), unique=True)
     password = db.Column(db.String(75))
     role = db.Column(db.String(10))
+    student_ids = db.relationship('Students', backref='user')
+    teacher_ids = db.relationship('Teachers', backref='user')
 
     def __init__(self,name,email,password,role):
         self.name = name
@@ -533,15 +538,16 @@ def register():
                 return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
                 pw = pwhash.make_pw_hash(password)
-                new_teacher = Teachers(name,email,request.form['class1'],request.form['class2'])
                 new_user = Users(name,email,pw,role)
+                new_teacher = Teachers(new_user,name,email,request.form['class1'],request.form['class2'])
                 db.session.add(new_teacher)
                 db.session.add(new_user)
                 db.session.commit()
             else: 
                 pw = pwhash.make_pw_hash(password)
-                new_student = Students(name,email,request.form['teacher_email'].lower())
                 new_user = Users(name,email,pw,role)
+                teacher = Teachers.query.filter_by(email=temail).first()
+                new_student = Students(new_user,name,email,teacher)
                 db.session.add(new_student)
                 db.session.add(new_user)
                 db.session.commit()
@@ -637,6 +643,44 @@ def classlists():
     classTitles = getClassList(teacher)
 
     return render_template('classlists.html',title="Assign Students", roster = roster, classTitles = classTitles)
+
+@app.route('/changeroster/<type>', methods=['POST', 'GET'])
+def changeroster(type):
+    user = Users.query.filter_by(email=session.get('email',None)).first()
+    if user.role.lower() != 'teacher':
+        return redirect('/')
+    if request.method == 'POST':
+        user = Users.query.filter_by(email=session.get('email',None)).first()
+        teacher = Teachers.query.filter_by(email=user.email).first()
+        roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
+        if type == 'add':
+            pw = pwhash.make_pw_hash('118')
+            name = request.form['name']
+            email = request.form['school_email']
+            new_user = Users(name,email,pw,'Student')
+            new_student = Students(new_user,name,email,teacher)
+            db.session.add(new_user)
+            db.session.add(new_student)
+            db.session.commit()
+        else:
+            for student in roster:
+                try:
+                    choice = request.form[str(student.id)]
+                except:
+                    choice = ''
+                if choice:
+                    student.teacher_email = "noteacher@school.edu" 
+                    student.course = None
+                    db.session.commit()
+
+        return redirect('/userinfo')
+
+    if type == 'add':
+        return render_template('changeroster.html',title="Change Roster", action = type)
+    else:
+        roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
+
+        return render_template('changeroster.html',title="Change Roster", roster = roster, action = type)
 
 if __name__ == '__main__':
     app.run()

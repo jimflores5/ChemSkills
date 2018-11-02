@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="btn-toolbar justify-content-between mt-2" role="toolbar">
+        <div class="ml-3">
+            <a class="btn btn-primary" href="/userinfo" role="button">Back</a>
+        </div>
+        <div class = 'wrapper text-center'>
+            <h1 class="wrapper text-center"><u>Change Student Roster</u></h1>
+        </div>
+        <div class="mr-3">
+            <a href="logout" class="btn btn-danger mb-2" role="button">Logout</a>
+        </div>
+    </div> 
+    <br/>
+    {% if action == 'add' %}
+        <div class="container-fluid" style="font-size:1.5vw">
+            <h3><u>Enter the following data for your new student</u>:</h3>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                <div class='col-4'>
+                    <form action="/changeroster/add" method="post">
+                        <div class="form-group row">
+                            <div class="col-5 wrapper text-right">
+                                <label style="color:blue" for='name'>Name:</label><br/>
+                                <label style="color:green" for='school_email'>School email:</label><br/>
+                                <label style="color:red" for='password'>Password:</label>
+                            </div>
+                            <div class="col-3 wrapper text-left">
+                                <input name="name" required type='text' value="{{name}}" size = "25"><br/>
+                                <input name="school_email" required type='email' value="{{email}}" size = "25"><br/>
+                                <input name="password" type="password" placeholder="Default set at '118'." size = "25" disabled>
+                            </div>
+                        </div>
+                        {% if messages %}
+                            <span class='{{messages[0][0]}}' style="font-size: 14pt">{{messages[0][1]}}</span>
+                        {% endif %}
+                        <div class='wrapper text-center'>
+                            <input type="submit" class="btn btn-success mb-2" value="Add">
+                        </div>
+                    </form>
+                </div>
+            {% endwith %}
+        </div>
+    {% else %}
+        <div class="container-fluid" style="font-size:1.5vw">
+            <h3><u>Select the student(s) to remove from your roster</u>:</h3>
+            <p style="color:brown">(If you want to switch a student to a different class, use the "Assign Students" button on the previous page.)</p>
+            <div class='col-8'>
+                <div>
+                    <table class="table table-sm table-bordered wrapper text-center" style="font-size:1.1vw">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col" style="color:blue">e-mail</th>
+                                <th scope="col" style="color:purple">Current Course</th>
+                                <th scope="col" style="color:red">WARNING!  This cannot be undone.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <form id="formid" action="/changeroster/remove" method="post">
+                                {% for student in roster %}
+                                    <tr>
+                                        <td>{{student.name}}</td>
+                                        <td style="color:blue">{{student.school_email}}</td>
+                                        <td style="color:purple">{{student.course}}</td>
+                                        <td>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" name="{{student.id}}" value="remove">
+                                                <label class="form-check-label" for="{{student.id}}">Remove</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </form>
+                        </tbody>
+                    </table>
+                </div>
+                <div class='wrapper text-center'>
+                    <input form='formid' type="submit" class="btn btn-danger" value="Remove">
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
