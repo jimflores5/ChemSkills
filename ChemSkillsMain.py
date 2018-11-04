@@ -653,6 +653,8 @@ def changeroster(type):
         user = Users.query.filter_by(email=session.get('email',None)).first()
         teacher = Teachers.query.filter_by(email=user.email).first()
         roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
+        transfers = []
+        removals = []
         if type == 'add':
             pw = pwhash.make_pw_hash('118')
             name = request.form['name']
@@ -662,24 +664,51 @@ def changeroster(type):
             db.session.add(new_user)
             db.session.add(new_student)
             db.session.commit()
+        elif request.form['changes'] == 'False':
+            for student in roster:
+                choice = request.form[str(student.id)]
+                if choice == 'transfer':
+                    transfers.append(student)
+                elif choice == 'remove':
+                    removals.append(student)
+            if transfers or removals:
+                return render_template('changeroster.html',title="Change Roster", action = type, transfers=transfers,removals = removals, changes = True)
         else:
+            errors = False
             for student in roster:
                 try:
-                    choice = request.form[str(student.id)]
+                    new_email = request.form[str(student.id)]
+                    if not Teachers.query.filter_by(email=new_email).first():
+                        flash("Teacher e-mail not found.",'error')
+                        errors = True
+                        transfers.append(student)
+                    else:
+                        flash("Teacher e-mail found.",'correct')
+                        student.teacher_email = new_email
+                        student.course = None
+                        transfers.append(student)
                 except:
-                    choice = ''
-                if choice:
-                    student.teacher_email = "noteacher@school.edu" 
-                    student.course = None
-                    db.session.commit()
-
+                    pass
+                try:
+                    request.form['remove'+str(student.id)]
+                    removals.append(student)
+                    user = Users.query.filter_by(id=student.id).first()
+                    db.session.delete(student)
+                    db.session.delete(user)
+                except:
+                    pass
+            if errors:
+                return render_template('changeroster.html',title="Change Roster", action = type, transfers=transfers,removals = removals, errors = errors, changes = True, confirmed = False)
+            else:
+                db.session.commit()
+                return render_template('changeroster.html',title="Change Roster", action = type, transfers=transfers,removals = removals, changes = True, confirmed = True)
+                    
         return redirect('/userinfo')
 
     if type == 'add':
         return render_template('changeroster.html',title="Change Roster", action = type)
     else:
         roster = Students.query.filter_by(teacher_email=user.email).order_by('course').all()
-
         return render_template('changeroster.html',title="Change Roster", roster = roster, action = type)
 
 @app.route('/deleteaccount', methods=['POST', 'GET'])
