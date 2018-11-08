@@ -660,14 +660,9 @@ def changeroster(type):
             name = request.form['name']
             email = request.form['school_email']
             errors = checkRegistration('Student','118','118',email,session.get('email'))
-            if True in errors:
-                if errors[0]:
-                    flash('Passwords do not match.', 'error')
-                if errors[1]:
-                    flash('School e-mail already registered.','error')
-                if errors[2]:
-                    flash("Teacher e-mail not found. Try again, or use NoTeacher@school.edu to register outside of your class.",'error')
-                return render_template('changeroster.html', title='Change Roster',action=type)
+            if Users.query.filter_by(email=email).first():
+                flash('School e-mail already registered.','error')
+                return render_template('changeroster.html', title='Change Roster', action=type, name = name, email=email)
             new_user = Users(name,email,pw,'Student')
             new_student = Students(new_user,name,email,teacher)
             db.session.add(new_user)
