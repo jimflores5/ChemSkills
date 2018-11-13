@@ -450,8 +450,8 @@ def covalentnamingtutorial(type):
 
         return render_template('covalentnamingtutorial.html',title="Naming Covalent Compounds", page = page, displayText = displayText, practiceList = practiceList, digits = digits, answers = answers, numCorrect = numCorrect)
 
-@naming_practice_blueprint.route('/ffmtutorial/<type>',methods=['POST', 'GET'])
-def ffmtutorial(type):
+@naming_practice_blueprint.route('/ffntutorial/<type>',methods=['POST', 'GET'])
+def ffntutorial(type):
     if request.method == 'POST':
         page = int(request.form['page'])
         answers = []
@@ -469,7 +469,7 @@ def ffmtutorial(type):
             else:
                 flash('Try again, or click here to reveal the answer.', 'error')
                 correct.append(False)
-        return render_template('ffmtutorial.html', title="Formulas from Names", page = page, practiceList = practiceList, digits = digits, answers = answers, numCorrect = numCorrect, correct = correct)
+        return render_template('ffntutorial.html', title="Formulas from Names", page = page, practiceList = practiceList, digits = digits, answers = answers, numCorrect = numCorrect, correct = correct)
     
     page = int(type)
     answers = []
@@ -485,4 +485,4 @@ def ffmtutorial(type):
         if Compound not in practiceList:
             practiceList.append(Compound)
 
-    return render_template('ffmtutorial.html',title="Formulas from Names", page = page, practiceList = practiceList, digits = digits, answers = answers, numCorrect = numCorrect, correct = correct)
+    return render_template('ffntutorial.html',title="Formulas from Names", page = page, practiceList = practiceList, digits = digits, answers = answers, numCorrect = numCorrect, correct = correct)

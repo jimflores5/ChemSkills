@@ -1,4 +1,4 @@
-{% extends "ffmtutorialbase.html" %}
+{% extends "ffntutorialbase.html" %}
 <!-- Remember this: https://stackoverflow.com/questions/6865081/add-subscript-to-numbers-on-the-fly-as-user-types-using-jquery -->
 {% block content %}
     <div class='wrapper text-left'>
@@ -22,7 +22,7 @@
                 <div class="col-7">
                     <p class="wrapper text-left" style="color:purple"><u>Provide the chemical formula for each of the following</u>:</p>
                     {% with messages = get_flashed_messages(with_categories=True) %}
-                        <form action="/ffmtutorial/{{page}}" method="post">
+                        <form action="/ffntutorial/{{page}}" method="post">
                             <ul type="a" class="wrapper text-left mt-3" style="font-size: 1.7vw">
                                 {% for item in range(4) %}
                                 <li style="color:blue">
@@ -66,10 +66,10 @@
                                 {% endfor %}
                             </ul>
                             {% if numCorrect != 4 %}
-                                <a class="btn btn-info mb-3" href="/ffmtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                <a class="btn btn-info mb-3" href="/ffntutorial/{{page}}" role="button">Refresh Compounds</a>
                                 <input class="btn btn-success mb-3" type="submit" value="Check">
                             {% else %}
-                                <a class="btn btn-info mb-3" href="/ffmtutorial/{{page}}" role="button">Refresh Compounds</a>
+                                <a class="btn btn-info mb-3" href="/ffntutorial/{{page}}" role="button">Refresh Compounds</a>
                                 <a class="btn btn-primary mb-3" href="/namingindex" role="button">Naming Menu</a>
                             {% endif %}
                             <script>
