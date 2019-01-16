@@ -455,9 +455,9 @@ def updateprogress():
         updateDBscores(user,choice,new_score)
         label_index = student_display_data.index(choice)
         if label_index < 3:
-            quiz_tutorial_choice = ('sfquiz','sigfigindex')
+            quiz_tutorial_choice = ('sfquiz','https://sigfigstutorial.herokuapp.com')
         else:
-            quiz_tutorial_choice = ('namingquizmenu','namingindex')
+            quiz_tutorial_choice = ('namingquizmenu','https://chemnomenclature.herokuapp.com')
 
         return render_template('updateprogress.html', afterUpload = True, skill = skill, quiz_tutorial_choice = quiz_tutorial_choice)
 
@@ -465,9 +465,9 @@ def updateprogress():
     email = session.get('email',None)
     label_index = student_display_data.index(choice)
     if label_index < 3:
-        quiz_tutorial_choice = ('sfquiz','sigfigindex')
+        quiz_tutorial_choice = ('sfquiz','https://sigfigstutorial.herokuapp.com')
     else:
-        quiz_tutorial_choice = ('namingquizmenu','namingindex')
+        quiz_tutorial_choice = ('namingquizmenu','https://chemnomenclature.herokuapp.com')
     for item in quiz_labels:
         if item == choice:
             skill = quiz_labels.get(item)
