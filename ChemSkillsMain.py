@@ -1,6 +1,8 @@
 import random
 from flask import Flask, request, redirect, render_template, session, flash
 import cgi
+import os
+import psycopg2
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
@@ -13,7 +15,7 @@ app.register_blueprint(naming_practice_blueprint)
 app.register_blueprint(sigfigs_blueprint)
 
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ChemSkills:4LCProject3@localhost:8889/ChemSkills'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
