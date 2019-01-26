@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn ChemSkills:app
+web: flask db upgrade; gunicorn ChemSkillsMain:app
