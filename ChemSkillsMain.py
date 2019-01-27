@@ -15,7 +15,8 @@ app.register_blueprint(naming_practice_blueprint)
 app.register_blueprint(sigfigs_blueprint)
 
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #Remote db via Heroku
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/ChemSkills'  #Local db.
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
@@ -94,8 +95,7 @@ def extractData(row,role):
         if role.lower() == 'student':
             if item in student_display_data:
                 data.append(all_info.get(item))
-        else:
-            if item in teacher_roster_data:
+        elif item in teacher_roster_data:
                 data.append(all_info.get(item))
     return data
 
