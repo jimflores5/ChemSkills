@@ -15,7 +15,8 @@ app.register_blueprint(naming_practice_blueprint)
 app.register_blueprint(sigfigs_blueprint)
 
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #Remote db via Heroku
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ChemSkills:4LCProject3@localhost:8889/ChemSkills'
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #Remote db via Heroku
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/ChemSkills'  #Local db.
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -171,16 +172,20 @@ def determineRank(score):
     return rank
 
 def checkRegistration(role,password,confirm,email,temail=''):
-    errors = [False,False,False] #[Password error,current user,teacher e-mail check]
+    errors = [False,False,False,False] #[Password error,current user,teacher e-mail check, database error]
     if password != confirm:
         errors[0] = True        #Passwords do not match.
+    try:
+        user = Users.query.filter_by(email=email).first() #Check to see if the database is active.
+    except:
+        errors[3] = True
+        return errors
     if role == "Student":
-        if Users.query.filter_by(email=email).first():  #Check current DB for student's email.
+        if user:  #Check current DB for student's email.
             errors[1] = True    #Already registered.
         if not Teachers.query.filter_by(email=temail).first():  #Check DB for teacher's email.
             errors[2] = True    #Teacher e-mail not in DB.
-    else:
-        if Users.query.filter_by(email=email).first():  #Check current DB for teacher's email.
+    elif user:  #Check current DB for teacher's email.
             errors[1] = True    #Already registered.
     return errors
 
@@ -491,7 +496,11 @@ def login():
     if request.method == 'POST':
         email = request.form['email'].lower()
         password = request.form['password']
-        user = Users.query.filter_by(email=email).first()
+        try:
+            user = Users.query.filter_by(email=email).first()
+        except:
+            flash('Oops!  The database is not responding.', 'error')
+            return render_template('login.html',title='Login to skills practice', email=email)
         if user and pwhash.check_pw_hash(password, user.password):
             session['email'] = email
             session['role'] = user.role
@@ -537,6 +546,8 @@ def register():
                     flash('School e-mail already registered.','error')
                 if errors[2]:
                     flash("Teacher e-mail not found. Try again, or use NoTeacher@school.edu to register outside of your class.",'error')
+                if errors[3]:
+                    flash("Sorry, the database is currently offline.",'error')
                 return render_template('register.html', title='Register',info_list = info_list, role=role, progress = 2, name=name, email=email,temail=temail)
             if role == 'Teacher':
                 pw = pwhash.make_pw_hash(password)
