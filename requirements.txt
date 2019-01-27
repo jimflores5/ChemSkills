@@ -18,6 +18,7 @@ Mako==1.0.7
 MarkupSafe==1.0
 mccabe==0.6.1
 psycopg2==2.7.7
+psycopg2-binary==2.7.7
 pycparser==2.19
 pylint==2.1.1
 PyMySQL==0.9.2
