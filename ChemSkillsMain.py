@@ -92,8 +92,7 @@ def extractData(row,role):
         if role.lower() == 'student':
             if item in student_display_data:
                 data.append(all_info.get(item))
-        else:
-            if item in teacher_roster_data:
+        elif item in teacher_roster_data:
                 data.append(all_info.get(item))
     return data
 
